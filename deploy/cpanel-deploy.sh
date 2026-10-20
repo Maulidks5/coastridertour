@@ -48,6 +48,11 @@ fi
 
 cd "${PROJECT_ROOT}"
 install -m 600 "${SECRETS_FILE}" .env
+if grep -q '^PUBLIC_STORAGE_ROOT=' .env; then
+    sed -i "s|^PUBLIC_STORAGE_ROOT=.*|PUBLIC_STORAGE_ROOT=${PUBLIC_ROOT}/storage|" .env
+else
+    printf '\nPUBLIC_STORAGE_ROOT=%s/storage\n' "${PUBLIC_ROOT}" >> .env
+fi
 mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 chmod -R ug+rwX storage bootstrap/cache
 
@@ -82,13 +87,14 @@ sed "s|__APP_ROOT__|${PROJECT_ROOT}|g" \
 chmod 644 "${PUBLIC_ROOT}/index.php.tmp"
 mv -f "${PUBLIC_ROOT}/index.php.tmp" "${PUBLIC_ROOT}/index.php"
 
-if [[ -e "${PUBLIC_ROOT}/storage" && ! -L "${PUBLIC_ROOT}/storage" ]]; then
-    echo "${PUBLIC_ROOT}/storage exists but is not a symbolic link; it was left untouched." >&2
-    echo "Move that directory once, then deploy again so uploads can be linked safely." >&2
-    exit 1
+if [[ -L "${PUBLIC_ROOT}/storage" ]]; then
+    rm "${PUBLIC_ROOT}/storage"
 fi
 
-ln -sfn "${PROJECT_ROOT}/storage/app/public" "${PUBLIC_ROOT}/storage"
+mkdir -p "${PUBLIC_ROOT}/storage"
+rsync -a "${PROJECT_ROOT}/storage/app/public/" "${PUBLIC_ROOT}/storage/"
+find "${PUBLIC_ROOT}/storage" -type d -exec chmod 755 {} +
+find "${PUBLIC_ROOT}/storage" -type f -exec chmod 644 {} +
 chmod 644 "${PUBLIC_ROOT}/.htaccess" "${PUBLIC_ROOT}/index.php"
 
 "${PHP_BIN}" artisan up

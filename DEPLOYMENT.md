@@ -93,7 +93,7 @@ Deployment script:
 4. Ina-clear na kujenga Laravel caches.
 5. Inasawazisha CSS, JavaScript, picha, video na `.htaccess` kwenda `public_html`.
 6. Inatengeneza front controller inayoelekeza kwenye Laravel repository.
-7. Inaunganisha `/storage` na uploads za CMS.
+7. Inaweka `/storage` moja kwa moja ndani ya `public_html` ili uploads za CMS zifanye kazi hata hosting ikizuia symbolic links.
 
 Script haigusi `public_html/.well-known`, `cgi-bin`, `.user.ini` au `php.ini`.
 
