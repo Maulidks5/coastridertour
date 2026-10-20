@@ -70,6 +70,12 @@ Katika **Manage My Databases**, hakikisha `coastridertour_user` amepewa **All Pr
 
 SSL tayari inaonekana active. Washa **Force HTTPS Redirect** ikiwa haijawashwa.
 
+Ikiwa hosting haina Composer ya mfumo, deployment script pia hutambua Composer iliyowekwa kwenye:
+
+```text
+/home2/coastridertour/bin/composer
+```
+
 ## 5. Deploy ya kwanza kupitia Terminal
 
 Endesha:

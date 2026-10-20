@@ -34,6 +34,9 @@ if [[ -z "${PHP_BIN}" ]]; then
 fi
 
 COMPOSER_BIN="$(command -v composer || true)"
+if [[ -z "${COMPOSER_BIN}" && -f "${ACCOUNT_HOME}/bin/composer" ]]; then
+    COMPOSER_BIN="${ACCOUNT_HOME}/bin/composer"
+fi
 if [[ -z "${COMPOSER_BIN}" && -x "/opt/cpanel/composer/bin/composer" ]]; then
     COMPOSER_BIN="/opt/cpanel/composer/bin/composer"
 fi
