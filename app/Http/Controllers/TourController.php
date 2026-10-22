@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\TourPricing;
 use App\Models\Tour;
 use App\Models\TourCategory;
 use App\Models\SiteSetting;
@@ -168,21 +169,7 @@ class TourController extends Controller
             'experienceType' => $tour->experience_type,
             'minimumAge' => $tour->minimum_age,
             'difficulty' => $tour->difficulty,
-            'pricing' => [
-                'sharedAvailable' => $tour->shared_available,
-                'sharedAdultPrice' => $tour->shared_adult_price !== null ? (float) $tour->shared_adult_price : ($tour->price > 0 ? (float) $tour->price : null),
-                'sharedChildPrice' => $tour->shared_child_price !== null ? (float) $tour->shared_child_price : null,
-                'sharedInfantPrice' => $tour->shared_infant_price !== null ? (float) $tour->shared_infant_price : null,
-                'privateAvailable' => $tour->private_available,
-                'privateTiers' => [
-                    ['min' => 1, 'max' => 2, 'price' => $tour->private_1_2_price !== null ? (float) $tour->private_1_2_price : null],
-                    ['min' => 3, 'max' => 4, 'price' => $tour->private_3_4_price !== null ? (float) $tour->private_3_4_price : null],
-                    ['min' => 5, 'max' => 6, 'price' => $tour->private_5_6_price !== null ? (float) $tour->private_5_6_price : null],
-                    ['min' => 7, 'max' => 10, 'price' => $tour->private_7_10_price !== null ? (float) $tour->private_7_10_price : null],
-                ],
-                'privateChildSupplement' => $tour->private_child_supplement !== null ? (float) $tour->private_child_supplement : null,
-                'largeGroupQuote' => $tour->large_group_quote,
-            ],
+            'pricing' => TourPricing::payload($tour),
         ];
     }
 }

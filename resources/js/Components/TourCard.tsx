@@ -1,13 +1,10 @@
 import { Link } from "./AppLink";
 import { Clock, MapPin, Star } from "lucide-react";
 import type { TourCardData } from "@/types/tour";
+import { tourPriceSummary } from "@/lib/tourPricing";
 
 export function TourCard({ tour }: { tour: TourCardData }) {
-    const price = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: tour.currency,
-        maximumFractionDigits: 0,
-    }).format(tour.price);
+    const price = tourPriceSummary(tour.price, tour.currency, tour.pricing);
     return (
         <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-card)] border border-border/50 transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-soft)]">
             <div className="relative aspect-[4/3] overflow-hidden">
@@ -20,10 +17,10 @@ export function TourCard({ tour }: { tour: TourCardData }) {
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#071d2b]/90 to-transparent px-4 pb-4 pt-12 text-white">
                     <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/75">
-                        {tour.price > 0 ? "Starting price / adult" : "Pricing"}
+                        {price.caption}
                     </p>
                     <p className="mt-0.5 font-display text-xl font-extrabold">
-                        {tour.price > 0 ? price : "Custom quote required"}
+                        {price.label}
                     </p>
                 </div>
                 {tour.reviewsCount > 0 && (

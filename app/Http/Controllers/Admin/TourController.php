@@ -65,12 +65,21 @@ class TourController extends Controller
                 'shared_child_price' => $tour->shared_child_price !== null ? (float) $tour->shared_child_price : null,
                 'shared_infant_price' => $tour->shared_infant_price !== null ? (float) $tour->shared_infant_price : null,
                 'private_available' => $tour->private_available,
+                'private_pricing_model' => $tour->private_pricing_model ?: 'group_total',
+                'private_1_person_price' => $tour->private_1_person_price !== null ? (float) $tour->private_1_person_price : null,
+                'private_2_person_price' => $tour->private_2_person_price !== null ? (float) $tour->private_2_person_price : null,
+                'private_3_person_price' => $tour->private_3_person_price !== null ? (float) $tour->private_3_person_price : null,
+                'private_4_plus_person_price' => $tour->private_4_plus_person_price !== null ? (float) $tour->private_4_plus_person_price : null,
+                'private_child_price' => $tour->private_child_price !== null ? (float) $tour->private_child_price : null,
+                'private_infant_price' => $tour->private_infant_price !== null ? (float) $tour->private_infant_price : null,
+                'private_max_online_guests' => $tour->private_max_online_guests ?: 10,
                 'private_1_2_price' => $tour->private_1_2_price !== null ? (float) $tour->private_1_2_price : null,
                 'private_3_4_price' => $tour->private_3_4_price !== null ? (float) $tour->private_3_4_price : null,
                 'private_5_6_price' => $tour->private_5_6_price !== null ? (float) $tour->private_5_6_price : null,
                 'private_7_10_price' => $tour->private_7_10_price !== null ? (float) $tour->private_7_10_price : null,
                 'private_child_supplement' => $tour->private_child_supplement !== null ? (float) $tour->private_child_supplement : null,
                 'large_group_quote' => $tour->large_group_quote,
+                'pricing_note' => $tour->pricing_note,
                 'currency' => $tour->currency,
                 'minimum_age' => $tour->minimum_age,
                 'difficulty' => $tour->difficulty,
@@ -174,9 +183,12 @@ class TourController extends Controller
         $data['private_available'] = $request->boolean('private_available');
         $data['large_group_quote'] = $request->boolean('large_group_quote');
 
-        $prices = $data['shared_available']
-            ? [$data['shared_adult_price'] ?? null]
-            : [$data['private_1_2_price'] ?? null, $data['private_3_4_price'] ?? null, $data['private_5_6_price'] ?? null, $data['private_7_10_price'] ?? null];
+        $prices = $data['shared_available'] ? [$data['shared_adult_price'] ?? null] : [];
+        if ($data['private_available'] && ($data['private_pricing_model'] ?? 'group_total') !== 'quote_only') {
+            $prices = [...$prices, ...(($data['private_pricing_model'] ?? 'group_total') === 'per_person_tiered'
+                ? [$data['private_1_person_price'] ?? null, $data['private_2_person_price'] ?? null, $data['private_3_person_price'] ?? null, $data['private_4_plus_person_price'] ?? null]
+                : [$data['private_1_2_price'] ?? null, $data['private_3_4_price'] ?? null, $data['private_5_6_price'] ?? null, $data['private_7_10_price'] ?? null])];
+        }
         $prices = array_values(array_filter($prices, fn ($price) => $price !== null && $price !== ''));
         $data['price'] = $prices ? min(array_map('floatval', $prices)) : 0;
 

@@ -20,12 +20,21 @@ type TourForm = {
   shared_child_price: number | "";
   shared_infant_price: number | "";
   private_available: boolean;
+  private_pricing_model: "group_total" | "per_person_tiered" | "quote_only";
+  private_1_person_price: number | "";
+  private_2_person_price: number | "";
+  private_3_person_price: number | "";
+  private_4_plus_person_price: number | "";
+  private_child_price: number | "";
+  private_infant_price: number | "";
+  private_max_online_guests: number;
   private_1_2_price: number | "";
   private_3_4_price: number | "";
   private_5_6_price: number | "";
   private_7_10_price: number | "";
   private_child_supplement: number | "";
   large_group_quote: boolean;
+  pricing_note: string;
   currency: string;
   minimum_age: number | "";
   difficulty: string;
@@ -68,12 +77,21 @@ export default function AdminTourEdit({ tour, categories }: Props) {
     shared_child_price: tour.shared_child_price ?? "",
     shared_infant_price: tour.shared_infant_price ?? "",
     private_available: tour.private_available,
+    private_pricing_model: tour.private_pricing_model ?? "group_total",
+    private_1_person_price: tour.private_1_person_price ?? "",
+    private_2_person_price: tour.private_2_person_price ?? "",
+    private_3_person_price: tour.private_3_person_price ?? "",
+    private_4_plus_person_price: tour.private_4_plus_person_price ?? "",
+    private_child_price: tour.private_child_price ?? "",
+    private_infant_price: tour.private_infant_price ?? "",
+    private_max_online_guests: tour.private_max_online_guests ?? 10,
     private_1_2_price: tour.private_1_2_price ?? "",
     private_3_4_price: tour.private_3_4_price ?? "",
     private_5_6_price: tour.private_5_6_price ?? "",
     private_7_10_price: tour.private_7_10_price ?? "",
     private_child_supplement: tour.private_child_supplement ?? "",
     large_group_quote: tour.large_group_quote,
+    pricing_note: tour.pricing_note ?? "",
     currency: tour.currency,
     minimum_age: tour.minimum_age ?? "",
     difficulty: tour.difficulty ?? "",
@@ -152,14 +170,17 @@ export default function AdminTourEdit({ tour, categories }: Props) {
             </div>}
           </div>
           <div className="rounded-2xl border border-slate-200 p-5">
-            <label className="flex items-center justify-between gap-4"><span><strong className="block">Only my group</strong><span className="text-xs text-slate-500">Private experience · enter the total price for each group size</span></span><input type="checkbox" checked={data.private_available} onChange={(e) => setData("private_available", e.target.checked)} className="h-5 w-5" /></label>
-            {data.private_available && <><div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <label className="flex items-center justify-between gap-4"><span><strong className="block">Only my group</strong><span className="text-xs text-slate-500">Private experience with clear, flexible pricing</span></span><input type="checkbox" checked={data.private_available} onChange={(e) => setData("private_available", e.target.checked)} className="h-5 w-5" /></label>
+            {data.private_available && <><Field label="Private pricing method" error={errors.private_pricing_model}><select value={data.private_pricing_model} onChange={(e) => setData("private_pricing_model", e.target.value as TourForm["private_pricing_model"])} className={`${input} mt-5`}><option value="per_person_tiered">Per person by adult group size (recommended)</option><option value="group_total">One total price by total group size (legacy)</option><option value="quote_only">Custom quote only</option></select></Field>
+            {data.private_pricing_model === "per_person_tiered" && <><p className="mt-4 text-xs text-slate-500">Like the excursion sheet: select the adult rate from the number of adults, then add children and infants separately.</p><div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><PriceField label="1 adult · per person" value={data.private_1_person_price} error={errors.private_1_person_price} onChange={(value) => setData("private_1_person_price", value)} /><PriceField label="2 adults · per person" value={data.private_2_person_price} error={errors.private_2_person_price} onChange={(value) => setData("private_2_person_price", value)} /><PriceField label="3 adults · per person" value={data.private_3_person_price} error={errors.private_3_person_price} onChange={(value) => setData("private_3_person_price", value)} /><PriceField label="4+ adults · per person" value={data.private_4_plus_person_price} error={errors.private_4_plus_person_price} onChange={(value) => setData("private_4_plus_person_price", value)} /><PriceField label="Child 3–12 · per child" value={data.private_child_price} error={errors.private_child_price} onChange={(value) => setData("private_child_price", value)} /><PriceField label="Infant 0–2" value={data.private_infant_price} error={errors.private_infant_price} onChange={(value) => setData("private_infant_price", value)} /><Field label="Maximum guests online" error={errors.private_max_online_guests}><input type="number" min="4" max="100" value={data.private_max_online_guests} onChange={(e) => setData("private_max_online_guests", Number(e.target.value))} className={input} /></Field></div></>}
+            {data.private_pricing_model === "group_total" && <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <PriceField label="1–2 guests" value={data.private_1_2_price} error={errors.private_1_2_price} onChange={(value) => setData("private_1_2_price", value)} />
               <PriceField label="3–4 guests" value={data.private_3_4_price} error={errors.private_3_4_price} onChange={(value) => setData("private_3_4_price", value)} />
               <PriceField label="5–6 guests" value={data.private_5_6_price} error={errors.private_5_6_price} onChange={(value) => setData("private_5_6_price", value)} />
               <PriceField label="7–10 guests" value={data.private_7_10_price} error={errors.private_7_10_price} onChange={(value) => setData("private_7_10_price", value)} />
-            </div><div className="mt-4 grid items-end gap-4 sm:grid-cols-2"><div><PriceField label="Additional child fee (optional)" value={data.private_child_supplement} error={errors.private_child_supplement} onChange={(value) => setData("private_child_supplement", value)} /><p className="mt-1 text-[11px] leading-4 text-slate-500">Use only for a separate child entry, flight or meal fee. Children are already counted in the group tier.</p></div><label className="flex min-h-12 items-center gap-2 rounded-xl bg-slate-50 px-4 text-sm font-semibold"><input type="checkbox" checked={data.large_group_quote} onChange={(e) => setData("large_group_quote", e.target.checked)} /> Request quote for more than 10 guests</label></div></>}
+            </div>}{data.private_pricing_model === "group_total" && <div className="mt-4"><PriceField label="Additional child fee (optional)" value={data.private_child_supplement} error={errors.private_child_supplement} onChange={(value) => setData("private_child_supplement", value)} /></div>}<label className="mt-4 flex min-h-12 items-center gap-2 rounded-xl bg-slate-50 px-4 text-sm font-semibold"><input type="checkbox" checked={data.large_group_quote} onChange={(e) => setData("large_group_quote", e.target.checked)} /> Request a quote above the online guest limit</label></>}
           </div>
+          <Field label="Public pricing note" error={errors.pricing_note}><textarea rows={2} value={data.pricing_note} onChange={(e) => setData("pricing_note", e.target.value)} className={input} placeholder="e.g. Final price depends on pickup location and is confirmed before payment." /></Field>
         </section>
 
         <section className="grid gap-5 rounded-2xl border border-slate-200 bg-white p-5 md:p-7">

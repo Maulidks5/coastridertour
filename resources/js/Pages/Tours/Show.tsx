@@ -8,6 +8,7 @@ import { TourCard } from "@/Components/TourCard";
 import { WhatsAppFloatingButton } from "@/Components/WhatsAppFloatingButton";
 import { getWhatsAppLink, useSiteConfig } from "@/config/site";
 import type { TourCardData, TourDetailData } from "@/types/tour";
+import { tourPriceSummary } from "@/lib/tourPricing";
 
 type Props = {
   tour: TourDetailData;
@@ -29,7 +30,8 @@ export default function TourShow({ tour, relatedTours }: Props) {
     currency: tour.currency,
     maximumFractionDigits: 0,
   }).format(tour.price);
-  const priceLabel = tour.price > 0 ? price : "Custom quote required";
+  const priceSummary = tourPriceSummary(tour.price, tour.currency, tour.pricing);
+  const priceLabel = priceSummary.label;
   const primaryCta = tour.price > 0 ? "Request to book" : "Request a quote";
   const bookingMessage = `Hello Coast Rider Tour, I would like to book ${tour.title}.`;
   const canonicalUrl = typeof window !== "undefined" ? window.location.href.split("?")[0] : "";
@@ -182,6 +184,17 @@ export default function TourShow({ tour, relatedTours }: Props) {
               <div className="flex items-start gap-4"><ShieldCheck className="h-7 w-7 shrink-0 text-[var(--ocean)]" /><div><h2 className="font-display text-2xl font-bold">Pickup details</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">{tour.pickupDetails}</p></div></div>
             </section>}
 
+            {tour.pricing.privateAvailable && tour.pricing.privatePricingModel === "per_person_tiered" && <section className="rounded-2xl border border-border bg-card p-6 md:p-8">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Clear pricing</p>
+              <h2 className="mt-2 font-display text-3xl font-bold">Private tour price per person</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">The adult rate becomes lower as the adult group grows. Children are priced separately.</p>
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {tour.pricing.privatePerPersonTiers.map((tier) => <div key={tier.min} className="rounded-xl bg-[var(--sand)]/60 p-4"><p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{tier.min >= 4 ? `${tier.min}+ adults` : `${tier.min} adult${tier.min === 1 ? "" : "s"}`}</p><p className="mt-1 font-display text-2xl font-bold text-[var(--ocean)]">{tier.price === null ? "Quote" : new Intl.NumberFormat("en-US", { style: "currency", currency: tour.currency, maximumFractionDigits: 0 }).format(tier.price)}</p><p className="text-xs text-muted-foreground">per adult</p></div>)}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-3 text-sm"><span className="rounded-full border border-border px-4 py-2">Child 3–12: {tour.pricing.privateChildPrice === null ? "quote" : new Intl.NumberFormat("en-US", { style: "currency", currency: tour.currency, maximumFractionDigits: 0 }).format(tour.pricing.privateChildPrice)}</span><span className="rounded-full border border-border px-4 py-2">Infant 0–2: {tour.pricing.privateInfantPrice === null ? "quote" : new Intl.NumberFormat("en-US", { style: "currency", currency: tour.currency, maximumFractionDigits: 0 }).format(tour.pricing.privateInfantPrice)}</span></div>
+              {tour.pricing.pricingNote && <p className="mt-4 text-xs leading-5 text-muted-foreground">{tour.pricing.pricingNote}</p>}
+            </section>}
+
             {tour.faqs.length > 0 && <section>
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Good to know</p>
               <h2 className="mt-2 font-display text-3xl font-bold">Frequently asked questions</h2>
@@ -196,7 +209,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
 
           <aside className="hidden h-fit lg:sticky lg:top-28 lg:block">
             <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Starting from</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{priceSummary.caption}</p>
               <p className="mt-1 font-display text-4xl font-bold text-[var(--ocean)]">{priceLabel}</p>
               <div className="my-6 h-px bg-border" />
               <div className="space-y-3 text-sm">

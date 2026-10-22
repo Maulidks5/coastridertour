@@ -86,9 +86,7 @@ export default function BookingCreate({ tour }: Props) {
             : tour.pricing.privateAvailable,
     );
     const totalGuests = data.adults + data.children;
-    const selectedPrivateTier = tour.pricing.privateTiers.find(
-        (tier) => totalGuests >= tier.min && totalGuests <= tier.max,
-    );
+    const selectedPrivateTier = tour.pricing.privateTiers.find((tier) => totalGuests >= tier.min && totalGuests <= tier.max);
     const estimatedTotal = useMemo(() => {
         if (data.booking_type === "shared") {
             if (tour.pricing.sharedAdultPrice === null) return null;
@@ -103,6 +101,16 @@ export default function BookingCreate({ tour }: Props) {
                 (tour.pricing.sharedChildPrice ?? 0) * children +
                 (tour.pricing.sharedInfantPrice ?? 0) * infants
             );
+        }
+        if (tour.pricing.privatePricingModel === "quote_only") return null;
+        if (tour.pricing.privatePricingModel === "per_person_tiered") {
+            const tier = tour.pricing.privatePerPersonTiers.find((item) => data.adults >= item.min && data.adults <= item.max);
+            if (!tier || tier.price === null) return null;
+            const infants = data.children_ages.filter((age) => age <= 2).length;
+            const children = data.children - infants;
+            if (children > 0 && tour.pricing.privateChildPrice === null) return null;
+            if (infants > 0 && tour.pricing.privateInfantPrice === null) return null;
+            return tier.price * data.adults + (tour.pricing.privateChildPrice ?? 0) * children + (tour.pricing.privateInfantPrice ?? 0) * infants;
         }
         const guests = data.adults + data.children;
         const tier = tour.pricing.privateTiers.find(
@@ -312,7 +320,7 @@ export default function BookingCreate({ tour }: Props) {
                                 </p>
                                 <p className="mt-1 text-xs text-muted-foreground">
                                     {data.booking_type === "private"
-                                        ? "Adults and children together determine your private group-price tier."
+                                        ? tour.pricing.privatePricingModel === "per_person_tiered" ? "Your adult rate is based on the number of adults; children and infants are added separately." : "Adults and children together determine your private group-price tier."
                                         : "Shared tour prices are calculated for each guest."}
                                 </p>
                             </div>
@@ -436,7 +444,7 @@ export default function BookingCreate({ tour }: Props) {
                                             <strong className="block text-foreground">
                                                 Applied tier
                                             </strong>
-                                            {selectedPrivateTier
+                                            {tour.pricing.privatePricingModel === "per_person_tiered" ? `${data.adults} adult${data.adults === 1 ? "" : "s"} · per-person rate` : selectedPrivateTier
                                                 ? `${selectedPrivateTier.min}–${selectedPrivateTier.max} guests`
                                                 : "Large group"}
                                         </p>
@@ -447,7 +455,7 @@ export default function BookingCreate({ tour }: Props) {
                                             Total for your group
                                             {estimatedTotal !== null &&
                                             totalGuests > 0
-                                                ? ` · about ${money(estimatedTotal / totalGuests)} per guest`
+                                                ? tour.pricing.privatePricingModel === "per_person_tiered" ? " · calculated by age category" : ` · about ${money(estimatedTotal / totalGuests)} per guest`
                                                 : ""}
                                             {tour.pricing
                                                 .privateChildSupplement !==
@@ -787,7 +795,7 @@ export default function BookingCreate({ tour }: Props) {
                                         : "Private tour · total group price"}
                                 </strong>
                                 {estimatedTotal !== null
-                                    ? "Calculated from the guests selected above. Children count toward the private group tier; only special entry, flight or meal fees are added separately. Pickup supplements, if any, are confirmed before payment."
+                                    ? tour.pricing.privatePricingModel === "per_person_tiered" ? "Calculated using the adult group-size rate plus child and infant rates. Pickup supplements, if any, are confirmed before payment." : "Calculated from the guests selected above. Children count toward the private group tier; only special entry, flight or meal fees are added separately. Pickup supplements, if any, are confirmed before payment."
                                     : "Your group size or missing rate needs a personalised quote from our team."}
                             </div>
                             <div className="mt-5 flex items-start gap-2 text-xs leading-5 text-muted-foreground">

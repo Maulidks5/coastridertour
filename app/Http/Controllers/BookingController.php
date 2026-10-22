@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Tour;
 use App\Mail\NewWebsiteSubmission;
 use App\Support\SendsSubmissionEmail;
+use App\Support\TourPricing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
@@ -31,7 +32,7 @@ class BookingController extends Controller
                 'location' => $tour->location,
                 'price' => (float) $tour->price,
                 'currency' => $tour->currency,
-                'pricing' => $this->pricing($tour),
+                'pricing' => TourPricing::payload($tour),
                 'image' => $tour->cover_image_path ?: '/images/coast-rider-placeholder.jpg',
             ],
         ]);
@@ -47,7 +48,7 @@ class BookingController extends Controller
             throw ValidationException::withMessages(['booking_type' => 'This tour style is not currently available.']);
         }
 
-        $estimate = $this->estimate($tour, $data);
+        $estimate = TourPricing::estimate($tour, $data['booking_type'], (int) $data['adults'], $data['children_ages'] ?? []);
         $booking = $tour->bookings()->create([
             ...$data,
             'estimated_price' => $estimate,
@@ -107,55 +108,6 @@ class BookingController extends Controller
     }
 
 
-    private function pricing(Tour $tour): array
-    {
-        return [
-            'sharedAvailable' => $tour->shared_available,
-            'sharedAdultPrice' => $tour->shared_adult_price !== null ? (float) $tour->shared_adult_price : ($tour->price > 0 ? (float) $tour->price : null),
-            'sharedChildPrice' => $tour->shared_child_price !== null ? (float) $tour->shared_child_price : null,
-            'sharedInfantPrice' => $tour->shared_infant_price !== null ? (float) $tour->shared_infant_price : null,
-            'privateAvailable' => $tour->private_available,
-            'privateTiers' => [
-                ['min' => 1, 'max' => 2, 'price' => $tour->private_1_2_price !== null ? (float) $tour->private_1_2_price : null],
-                ['min' => 3, 'max' => 4, 'price' => $tour->private_3_4_price !== null ? (float) $tour->private_3_4_price : null],
-                ['min' => 5, 'max' => 6, 'price' => $tour->private_5_6_price !== null ? (float) $tour->private_5_6_price : null],
-                ['min' => 7, 'max' => 10, 'price' => $tour->private_7_10_price !== null ? (float) $tour->private_7_10_price : null],
-            ],
-            'privateChildSupplement' => $tour->private_child_supplement !== null ? (float) $tour->private_child_supplement : null,
-            'largeGroupQuote' => $tour->large_group_quote,
-        ];
-    }
-
-    private function estimate(Tour $tour, array $data): ?float
-    {
-        if ($data['booking_type'] === 'shared') {
-            if ($tour->shared_adult_price === null && $tour->price > 0) {
-                return (float) $tour->price;
-            }
-            $adultPrice = $tour->shared_adult_price ?? ($tour->price > 0 ? $tour->price : null);
-            if ($adultPrice === null) return null;
-            $ages = $data['children_ages'] ?? [];
-            $infants = count(array_filter($ages, fn ($age) => (int) $age <= 2));
-            $children = count($ages) - $infants;
-            if ($children > 0 && $tour->shared_child_price === null) return null;
-            if ($infants > 0 && $tour->shared_infant_price === null) return null;
-            return ((float) $adultPrice * $data['adults'])
-                + ((float) ($tour->shared_child_price ?? 0) * $children)
-                + ((float) ($tour->shared_infant_price ?? 0) * $infants);
-        }
-
-        $guests = $data['adults'] + $data['children'];
-        $base = match (true) {
-            $guests <= 2 => $tour->private_1_2_price,
-            $guests <= 4 => $tour->private_3_4_price,
-            $guests <= 6 => $tour->private_5_6_price,
-            $guests <= 10 => $tour->private_7_10_price,
-            default => null,
-        };
-        if ($base === null) return null;
-
-        return (float) $base + ((float) ($tour->private_child_supplement ?? 0) * $data['children']);
-    }
     private function newReference(): string
     {
         do {

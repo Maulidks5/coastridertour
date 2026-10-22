@@ -22,9 +22,15 @@ export type TourPricing = {
     sharedChildPrice: number | null;
     sharedInfantPrice: number | null;
     privateAvailable: boolean;
+    privatePricingModel: "group_total" | "per_person_tiered" | "quote_only";
     privateTiers: Array<{ min: number; max: number; price: number | null }>;
+    privatePerPersonTiers: Array<{ min: number; max: number; price: number | null }>;
+    privateChildPrice: number | null;
+    privateInfantPrice: number | null;
     privateChildSupplement: number | null;
+    privateMaxOnlineGuests: number;
     largeGroupQuote: boolean;
+    pricingNote: string | null;
 };
 
 export type TourCategoryData = {
