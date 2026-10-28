@@ -26,7 +26,7 @@ class TravelGuideController extends Controller
   $tours = Tour::query()->published()->whereIn('slug',$slugs)->with('category:id,name')->get()->sortBy(fn($tour)=>array_search($tour->slug,$slugs))->values()->map(fn($tour)=>[
    'slug'=>$tour->slug,'title'=>$tour->title,'description'=>$tour->excerpt,'duration'=>$tour->duration,'location'=>$tour->location,'rating'=>(float)$tour->rating,'reviewsCount'=>$tour->reviews_count,'price'=>(float)$tour->price,'currency'=>$tour->currency,'image'=>$tour->cover_image_path,'category'=>$tour->category?->name,'experienceType'=>$tour->experience_type,'minimumAge'=>$tour->minimum_age,'difficulty'=>$tour->difficulty,
   ]);
-  return Inertia::render('Guides/Show', ['guide'=>[...$this->card($guide),'content'=>$guide->content,'metaTitle'=>$guide->meta_title,'metaDescription'=>$guide->meta_description],'relatedTours'=>$tours]);
+  return Inertia::render('Guides/Show', ['guide'=>[...$this->card($guide),'content'=>$guide->content,'metaTitle'=>$guide->meta_title,'metaDescription'=>$guide->meta_description,'modifiedAt'=>$guide->updated_at?->toDateString(),'canonicalUrl'=>route('guides.show', $guide)],'relatedTours'=>$tours]);
  }
  private function card(TravelGuide $guide): array { return ['slug'=>$guide->slug,'title'=>$guide->title,'category'=>$guide->category,'excerpt'=>$guide->excerpt,'image'=>$guide->image_path,'readingTime'=>$guide->reading_time,'publishedAt'=>$guide->published_at?->toDateString(),'featured'=>$guide->is_featured]; }
 }

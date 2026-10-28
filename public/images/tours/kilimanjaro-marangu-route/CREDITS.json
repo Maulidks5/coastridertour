@@ -1,0 +1,36 @@
+{
+  "license": "Pexels License",
+  "license_url": "https://www.pexels.com/license/",
+  "images": [
+    {
+      "file": "cover.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/a-view-of-kilimanjaro-15993990/"
+    },
+    {
+      "file": "gallery/mawenzi-sunrise.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/aerial-photo-of-mount-kilimanjaro-15994035/"
+    },
+    {
+      "file": "gallery/marangu-trekker.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/15993989/"
+    },
+    {
+      "file": "gallery/rocky-alpine-zone.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/rocky-mount-kilimanjaro-15994011/"
+    },
+    {
+      "file": "gallery/kilimanjaro-ice-cap.webp",
+      "photographer": "Penfran Tanzania",
+      "source": "https://www.pexels.com/photo/stunning-ice-cap-on-mount-kilimanjaro-summit-37808650/"
+    },
+    {
+      "file": "gallery/mountain-rest-stop.webp",
+      "photographer": "Никита Шелайкин",
+      "source": "https://www.pexels.com/photo/hiker-relaxing-on-mount-kilimanjaro-trail-31107595/"
+    }
+  ]
+}

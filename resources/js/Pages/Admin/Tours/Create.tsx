@@ -80,7 +80,7 @@ export default function CreateTour({ categories, defaultType, defaultCategoryId 
             <Field label="Full description" error={errors.description}><textarea required rows={6} value={data.description} onChange={(event) => setData("description", event.target.value)} className={input} placeholder="Describe the experience, what guests will do and what makes it special." /></Field>
           </Section>
 
-          <Section title="Trip details" description="Duration, location, pricing and guest requirements.">
+          <Section title="Trip details" description={`Duration, location, guest requirements and prices in ${data.currency}.`}>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <Field label="Duration" error={errors.duration}><input required value={data.duration} onChange={(event) => setData("duration", event.target.value)} className={input} placeholder="Half Day" /></Field>
               <Field label="Location" error={errors.location}><input required value={data.location} onChange={(event) => setData("location", event.target.value)} className={input} /></Field>

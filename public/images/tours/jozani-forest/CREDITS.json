@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "title": "Red Colobus Monkey in Jozani Forest, Zanzibar",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/red-colobus-monkey-in-jozani-forest-zanzibar-37087527/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/red-colobus-closeup.webp",
+    "title": "Little Monkey",
+    "photographer": "Oljamu",
+    "source": "https://www.pexels.com/photo/little-monkey-27669236/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/red-colobus-branch.webp",
+    "title": "Monkey in the Tree",
+    "photographer": "Oljamu",
+    "source": "https://www.pexels.com/photo/monkey-in-the-tree-27669243/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/red-colobus-forest.webp",
+    "title": "Red Colobus Monkey in Zanzibar Forest",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/red-colobus-monkey-in-zanzibar-forest-37087529/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/blue-monkey.webp",
+    "title": "Blue Monkey in Zanzibar's Tropical Forest",
+    "photographer": "Mustafa Mašetić",
+    "source": "https://www.pexels.com/photo/blue-monkey-in-zanzibar-s-tropical-forest-30838949/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/tropical-foliage.webp",
+    "title": "Lush Tropical Foliage in Zanzibar Garden",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/lush-tropical-foliage-in-zanzibar-garden-37087504/",
+    "license": "Pexels License"
+  }
+]

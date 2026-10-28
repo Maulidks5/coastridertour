@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "African elephant family bathing in a Tanzanian river",
+    "photographer": "Alex Ning",
+    "source": "https://www.pexels.com/photo/african-elephants-bathing-in-tanzanian-river-33650619/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/hippos.webp",
+    "description": "Mother hippopotamus and calf in Tanzanian waters",
+    "photographer": "Tomasz Dworczyk",
+    "source": "https://www.pexels.com/photo/mother-hippopotamus-and-calf-in-tanzanian-waters-32332412/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/river-elephants.webp",
+    "description": "African elephants playing in a river",
+    "photographer": "Charmain Jansen van Rensburg",
+    "source": "https://www.pexels.com/photo/african-elephants-playing-in-a-river-35981572/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/lion-sighting.webp",
+    "description": "Guests photographing a lion during an African safari",
+    "photographer": "Adrien Olichon",
+    "source": "https://www.pexels.com/photo/african-safari-tour-with-wildlife-viewing-36702540/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/giraffe-game-drive.webp",
+    "description": "Giraffes crossing in front of a safari vehicle",
+    "photographer": "Zacchaeus Rains",
+    "source": "https://www.pexels.com/photo/giraffes-and-car-on-safari-in-africa-20523197/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/lion-cubs.webp",
+    "description": "Lion cubs resting in golden grass at sunset in Tanzania",
+    "photographer": "Natalia Msungu",
+    "source": "https://www.pexels.com/photo/two-lion-cubs-in-the-grass-at-sunset-27462254/",
+    "license": "Pexels License"
+  }
+]

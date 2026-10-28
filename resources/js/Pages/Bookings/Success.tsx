@@ -15,6 +15,7 @@ type Props = {
     children: number;
     childrenAges: number[];
     bookingType: string;
+    bookingStyleLabel: string | null;
     pickupZone: string | null;
     estimatedPrice: number | null;
     estimatedCurrency: string | null;
@@ -28,7 +29,8 @@ export default function BookingSuccess({ booking }: Props) {
   const [copied, setCopied] = useState(false);
   const pickupLabel = ({ stone_town: "Stone Town / Airport", north: "North Coast", east: "East Coast", south_east: "South & South East Coast", other: "Other area", not_sure: "Not sure yet" } as Record<string, string>)[booking.pickupZone ?? ""] ?? "Not provided";
   const guestsLabel = `${booking.adults} ${booking.adults === 1 ? "adult" : "adults"}${booking.children > 0 ? `, ${booking.children} ${booking.children === 1 ? "child" : "children"}` : ""}`;
-  const message = `Hello Coast Rider Tour, I submitted request ${booking.reference}. Tour: ${booking.tourTitle}. Date: ${booking.travelDate}. Style: ${booking.bookingType}. Guests: ${guestsLabel}. Pickup: ${pickupLabel}.`;
+  const styleLabel = booking.bookingStyleLabel || (booking.bookingType === "shared" ? "Shared tour" : "Private arrangement");
+  const message = `Hello Coast Rider Tour, I submitted request ${booking.reference}. Tour: ${booking.tourTitle}. Date: ${booking.travelDate}. Style: ${styleLabel}. Guests: ${guestsLabel}. Pickup: ${pickupLabel}.`;
   const estimatedPrice = booking.estimatedPrice && booking.estimatedCurrency
     ? new Intl.NumberFormat("en-US", { style: "currency", currency: booking.estimatedCurrency, maximumFractionDigits: 0 }).format(booking.estimatedPrice)
     : null;
@@ -56,7 +58,7 @@ export default function BookingSuccess({ booking }: Props) {
           <div className="mx-auto mt-8 max-w-md rounded-2xl bg-[var(--sand)]/70 p-5 text-left text-sm">
             <div className="flex items-center justify-between gap-4"><span className="text-muted-foreground">Reference</span><span className="flex min-w-0 items-center gap-2"><strong className="truncate">{booking.reference}</strong><button type="button" aria-label="Copy booking reference" onClick={async () => { await navigator.clipboard.writeText(booking.reference); setCopied(true); window.setTimeout(() => setCopied(false), 2000); }} className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border bg-white text-[var(--ocean)]">{copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}</button></span></div>
             <div className="mt-3 flex justify-between gap-4"><span className="text-muted-foreground">Travel date</span><strong>{booking.travelDate}</strong></div>
-            <div className="mt-3 flex justify-between gap-4"><span className="text-muted-foreground">Tour style</span><strong className="capitalize">{booking.bookingType}</strong></div>
+            <div className="mt-3 flex justify-between gap-4"><span className="text-muted-foreground">Tour style</span><strong className="max-w-[65%] text-right">{styleLabel}</strong></div>
             <div className="mt-3 flex justify-between gap-4"><span className="text-muted-foreground">Guests</span><strong>{guestsLabel}</strong></div>
             {booking.childrenAges.length > 0 && <div className="mt-3 flex justify-between gap-4"><span className="text-muted-foreground">Children ages</span><strong>{booking.childrenAges.join(", ")}</strong></div>}
             <div className="mt-3 flex justify-between gap-4"><span className="text-muted-foreground">Pickup area</span><strong className="text-right">{pickupLabel}</strong></div>

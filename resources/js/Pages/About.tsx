@@ -85,6 +85,29 @@ export default function About({ content, values }: Props) {
             </div>
           </div>
         </section>}
+        <section className="border-t border-border bg-white">
+          <div className="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-[.8fr_1.2fr] lg:px-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Before you confirm</p>
+              <h2 className="mt-3 font-display text-3xl font-bold md:text-4xl">The important details stay clear</h2>
+              <p className="mt-4 text-sm leading-7 text-muted-foreground">Every trip is different. We confirm the practical details with you before treating a request as a booking.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                ["Final price", "Your confirmed amount and whether it is per person or per vehicle."],
+                ["What is included", "Transport, guide, entrance fees, meals and other applicable items."],
+                ["Pickup plan", "The agreed hotel or meeting point, date and pickup time."],
+                ["Changes & cancellation", "The relevant terms before payment and confirmation."],
+              ].map(([title, description]) => (
+                <article key={title} className="rounded-2xl border border-border p-5">
+                  <Check className="h-5 w-5 text-[var(--turquoise)]" />
+                  <h3 className="mt-3 font-bold">{title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
         <section className="bg-[var(--ocean)] text-white"><div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 md:py-20"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--gold)]">Plan with a local team</p><h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">Ready to start planning?</h2><p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/70">Explore our experiences or tell us what kind of trip you have in mind.</p><div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/tours" className="rounded-full bg-[var(--gold)] px-6 py-3 font-bold text-foreground">Explore tours</Link><a href={getWhatsAppLink("Hello Coast Rider Tour, I would like help planning my trip.", site)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3 font-bold"><MessageCircle className="h-4 w-4"/> Talk to our team</a></div></div></section>
       </main>
       <Footer />

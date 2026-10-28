@@ -5,6 +5,7 @@ import { Footer } from "@/Components/Footer";
 import { Navbar } from "@/Components/Navbar";
 import { SectionHeading } from "@/Components/SectionHeading";
 import { TourCard } from "@/Components/TourCard";
+import { TourPriceCalculator } from "@/Components/TourPriceCalculator";
 import { WhatsAppFloatingButton } from "@/Components/WhatsAppFloatingButton";
 import { getWhatsAppLink, useSiteConfig } from "@/config/site";
 import type { TourCardData, TourDetailData } from "@/types/tour";
@@ -23,24 +24,28 @@ export default function TourShow({ tour, relatedTours }: Props) {
     return images.filter((image, index) => images.findIndex((item) => item.path === image.path) === index);
   }, [tour.image, tour.images, tour.title]);
   const isSafari = tour.experienceType === "safari";
+  const requestHref = isSafari
+    ? `/safaris?safari=${encodeURIComponent(tour.slug)}#plan-safari`
+    : `/book/${tour.slug}`;
   const cataloguePath = isSafari ? "/safaris" : "/tours";
   const catalogueLabel = isSafari ? "All safaris" : "All tours";
-  const price = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: tour.currency,
-    maximumFractionDigits: 0,
-  }).format(tour.price);
   const priceSummary = tourPriceSummary(tour.price, tour.currency, tour.pricing);
   const priceLabel = priceSummary.label;
-  const primaryCta = tour.price > 0 ? "Request to book" : "Request a quote";
+  const isQuoteOnly = tour.pricing.privateAvailable
+    && tour.pricing.privatePricingModel === "quote_only"
+    && !tour.pricing.sharedAvailable;
+  const primaryCta = isSafari || isQuoteOnly || tour.price <= 0 ? "Request a quote" : "Request to book";
   const bookingMessage = `Hello Coast Rider Tour, I would like to book ${tour.title}.`;
   const canonicalUrl = typeof window !== "undefined" ? window.location.href.split("?")[0] : "";
+  const shareImage = typeof window !== "undefined" && !tour.image.startsWith("http")
+    ? `${window.location.origin}${tour.image}`
+    : tour.image;
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     name: tour.title,
     description: tour.metaDescription || tour.description,
-    image: tour.image,
+    image: shareImage,
     touristType: tour.experienceType === "safari" ? "Safari travellers" : "Zanzibar travellers",
     itinerary: tour.location,
     provider: {
@@ -84,7 +89,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
         <meta property="og:type" content="website" />
         <meta property="og:title" content={tour.metaTitle || tour.title} />
         <meta property="og:description" content={tour.metaDescription || tour.description} />
-        <meta property="og:image" content={tour.image} />
+        <meta property="og:image" content={shareImage} />
         <meta property="og:url" content={canonicalUrl} />
         <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
@@ -92,16 +97,16 @@ export default function TourShow({ tour, relatedTours }: Props) {
 
       <Navbar />
       <main>
-        <section className="relative min-h-[30rem] overflow-hidden sm:min-h-[34rem] lg:min-h-[60vh]">
+        <section className="relative min-h-[27rem] overflow-hidden sm:min-h-[30rem] lg:min-h-[34rem]">
           <img src={tour.image} alt={tour.title} className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#10182d]/95 via-[#10182d]/45 to-[#10182d]/30" />
-          <div className="relative mx-auto flex min-h-[30rem] max-w-7xl items-end px-4 pb-8 pt-16 sm:min-h-[34rem] sm:px-6 sm:pb-10 lg:min-h-[60vh] lg:px-8 lg:pb-12 lg:pt-24">
+          <div className="relative mx-auto flex min-h-[27rem] max-w-7xl items-end px-4 pb-8 pt-16 sm:min-h-[30rem] sm:px-6 sm:pb-10 lg:min-h-[34rem] lg:px-8 lg:pb-12 lg:pt-20">
             <div className="max-w-4xl text-white">
               <Link href={cataloguePath} className="inline-flex items-center gap-1 text-sm font-medium text-white/75 hover:text-white">
                 <ChevronLeft className="h-4 w-4" /> {catalogueLabel}
               </Link>
-              <p className="mt-6 text-xs font-bold uppercase tracking-[0.22em] text-[var(--gold)]">{tour.category}</p>
-              <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl md:text-6xl">{tour.title}</h1>
+              {tour.category && <p className="mt-6 text-xs font-bold uppercase tracking-[0.22em] text-[var(--gold)]">{tour.category}</p>}
+              <h1 className={`${tour.category ? "mt-3" : "mt-6"} font-display text-3xl font-bold sm:text-4xl md:text-6xl`}>{tour.title}</h1>
               <div className="mt-4 inline-flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-3 text-[var(--ocean)] shadow-lg backdrop-blur">
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{tour.price > 0 ? "Starting from" : "Pricing"}</span>
                 <strong className="font-display text-xl">{priceLabel}</strong>
@@ -122,8 +127,10 @@ export default function TourShow({ tour, relatedTours }: Props) {
             <section>
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Overview</p>
               <h2 className="mt-2 font-display text-3xl font-bold">About this experience</h2>
-              <p className="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-muted-foreground">{tour.fullDescription}</p>
+              <p className="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-muted-foreground">{tour.fullDescription || tour.description}</p>
             </section>
+
+            <TourPriceCalculator slug={tour.slug} currency={tour.currency} pricing={tour.pricing} safariQuote={isSafari} />
 
             {gallery.length > 1 && (
               <section>
@@ -184,17 +191,6 @@ export default function TourShow({ tour, relatedTours }: Props) {
               <div className="flex items-start gap-4"><ShieldCheck className="h-7 w-7 shrink-0 text-[var(--ocean)]" /><div><h2 className="font-display text-2xl font-bold">Pickup details</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">{tour.pickupDetails}</p></div></div>
             </section>}
 
-            {tour.pricing.privateAvailable && tour.pricing.privatePricingModel === "per_person_tiered" && <section className="rounded-2xl border border-border bg-card p-6 md:p-8">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Clear pricing</p>
-              <h2 className="mt-2 font-display text-3xl font-bold">Private tour price per person</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">The adult rate becomes lower as the adult group grows. Children are priced separately.</p>
-              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {tour.pricing.privatePerPersonTiers.map((tier) => <div key={tier.min} className="rounded-xl bg-[var(--sand)]/60 p-4"><p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{tier.min >= 4 ? `${tier.min}+ adults` : `${tier.min} adult${tier.min === 1 ? "" : "s"}`}</p><p className="mt-1 font-display text-2xl font-bold text-[var(--ocean)]">{tier.price === null ? "Quote" : new Intl.NumberFormat("en-US", { style: "currency", currency: tour.currency, maximumFractionDigits: 0 }).format(tier.price)}</p><p className="text-xs text-muted-foreground">per adult</p></div>)}
-              </div>
-              <div className="mt-4 flex flex-wrap gap-3 text-sm"><span className="rounded-full border border-border px-4 py-2">Child 3–12: {tour.pricing.privateChildPrice === null ? "quote" : new Intl.NumberFormat("en-US", { style: "currency", currency: tour.currency, maximumFractionDigits: 0 }).format(tour.pricing.privateChildPrice)}</span><span className="rounded-full border border-border px-4 py-2">Infant 0–2: {tour.pricing.privateInfantPrice === null ? "quote" : new Intl.NumberFormat("en-US", { style: "currency", currency: tour.currency, maximumFractionDigits: 0 }).format(tour.pricing.privateInfantPrice)}</span></div>
-              {tour.pricing.pricingNote && <p className="mt-4 text-xs leading-5 text-muted-foreground">{tour.pricing.pricingNote}</p>}
-            </section>}
-
             {tour.faqs.length > 0 && <section>
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Good to know</p>
               <h2 className="mt-2 font-display text-3xl font-bold">Frequently asked questions</h2>
@@ -219,10 +215,10 @@ export default function TourShow({ tour, relatedTours }: Props) {
               </div>
               <div className="my-6 h-px bg-border" />
               <div className="rounded-xl bg-[var(--sand)]/65 p-4 text-xs leading-5 text-muted-foreground">
-                {tour.price > 0 ? <><strong className="block text-foreground">See your estimated total</strong><span>Select your date and number of travellers. We show the estimate before you send the request.</span></> : <><strong className="block text-foreground">Tailored pricing</strong><span>Send your date and group size for a personalised quote.</span></>}
+                {!isQuoteOnly && tour.price > 0 ? <><strong className="block text-foreground">See your estimated total</strong><span>Select your date and number of travellers. We show the estimate before you send the request.</span></> : <><strong className="block text-foreground">Tailored pricing</strong><span>Send your date and group size for a personalised quote.</span></>}
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground"><span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-[var(--turquoise)]" /> No payment now</span><span className="inline-flex items-center gap-1.5"><MessageCircle className="h-4 w-4 text-[var(--turquoise)]" /> Local support</span></div>
-              <a href={`/book/${tour.slug}`} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--gold)] px-5 py-3.5 font-bold text-foreground transition hover:brightness-95">{primaryCta}</a>
+              <a href={requestHref} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--gold)] px-5 py-3.5 font-bold text-foreground transition hover:brightness-95">{primaryCta}</a>
               <a href={getWhatsAppLink(bookingMessage, site)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-bold text-white transition hover:brightness-95"><MessageCircle className="h-5 w-5" /> Ask on WhatsApp</a>
               <p className="mt-4 text-center text-xs text-muted-foreground">Availability and final price are confirmed before booking.</p>
             </div>
@@ -242,7 +238,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
         <div className="mx-auto flex max-w-lg items-center gap-2.5">
           <div className="min-w-0 flex-1"><p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{tour.price > 0 ? "Starting from" : "Pricing"}</p><p className="truncate font-display text-lg font-bold text-[var(--ocean)]">{priceLabel}</p></div>
           <a href={getWhatsAppLink(bookingMessage, site)} target="_blank" rel="noopener noreferrer" aria-label="Ask about this tour on WhatsApp" className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white"><MessageCircle className="h-5 w-5" /></a>
-          <a href={`/book/${tour.slug}`} className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--gold)] px-4 text-center text-xs font-bold leading-4 text-foreground">{tour.price > 0 ? "Request to book" : "Request quote"}</a>
+          <a href={requestHref} className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--gold)] px-4 text-center text-xs font-bold leading-4 text-foreground">{isSafari || isQuoteOnly || tour.price <= 0 ? "Request quote" : "Request to book"}</a>
         </div>
       </div>
       <div className="hidden lg:block"><WhatsAppFloatingButton /></div>

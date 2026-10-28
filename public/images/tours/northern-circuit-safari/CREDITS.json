@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Elephant herd crossing the savanna in Tarangire National Park",
+    "photographer": "Dirk Pothen",
+    "source": "https://www.pexels.com/photo/elephant-herd-in-tarangire-national-park-safari-30629351/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/tarangire-elephant.webp",
+    "description": "African elephant in Tarangire National Park, Tanzania",
+    "photographer": "Brett Bennett",
+    "source": "https://www.pexels.com/photo/african-elephant-on-savanna-19986851/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/manyara-zebras.webp",
+    "description": "Zebra herd beside Lake Manyara with flamingos beyond",
+    "photographer": "Kilinge Adventures",
+    "source": "https://www.pexels.com/photo/herd-of-zebras-grazing-near-a-lake-12573131/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/manyara-flamingos.webp",
+    "description": "Flamingos wading in a Tanzanian lake",
+    "photographer": "Alex Ning",
+    "source": "https://www.pexels.com/photo/vibrant-flamingos-wading-in-lake-in-tanzania-33650555/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/ngorongoro-zebras.webp",
+    "description": "Zebras feeding inside Ngorongoro Crater",
+    "photographer": "Nadia Vasil'eva",
+    "source": "https://www.pexels.com/photo/photo-of-zebras-standing-on-the-field-25950512/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/serengeti-lion-family.webp",
+    "description": "Lioness and cub resting in Serengeti grassland",
+    "photographer": "Filip Olsok",
+    "source": "https://www.pexels.com/photo/lioness-and-cub-on-brown-grass-field-4003481/",
+    "license": "Pexels License"
+  }
+]

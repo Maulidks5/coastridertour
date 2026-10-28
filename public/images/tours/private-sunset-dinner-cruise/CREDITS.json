@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Dhow sailing at sunset in Zanzibar",
+    "photographer": "Gavin Rain",
+    "source": "https://www.pexels.com/photo/sailboat-at-sea-during-sunset-14093348/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/dhow-sunset.webp",
+    "description": "Traditional boat on a Zanzibar beach at sunset",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/serene-zanzibar-dhow-at-sunset-37087461/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/ocean-horizon.webp",
+    "description": "Boats on the Zanzibar ocean horizon at sunset",
+    "photographer": "Mustafa Mašetić",
+    "source": "https://www.pexels.com/photo/tranquil-zanzibar-sunset-with-boats-on-ocean-horizon-30312826/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/sunset-sailing.webp",
+    "description": "Traditional dhow at sunset in Zanzibar",
+    "photographer": "Mustafa Mašetić",
+    "source": "https://www.pexels.com/photo/traditional-dhow-at-sunset-in-zanzibar-30311543/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/seaside-table.webp",
+    "description": "Seaside dinner table prepared at sunset",
+    "photographer": "Rachel Claire",
+    "source": "https://www.pexels.com/photo/table-arrangement-for-dinner-on-beach-at-sea-5864611/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/seafood-dinner.webp",
+    "description": "Candlelit seafood dinner setting",
+    "photographer": "cottonbro studio",
+    "source": "https://www.pexels.com/photo/close-up-of-people-by-table-with-meal-6954051/",
+    "license": "Pexels License"
+  }
+]

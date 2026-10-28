@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import { AdminLayout } from "@/Components/AdminLayout";
 import { AdminEmptyState, AdminPageHeader, AdminTableShell, adminTableCellClass, adminTableClass, adminTableHeadClass, adminTableHeaderCellClass, adminTableRowClass } from "@/Components/AdminUi";
 import { ExternalLink, Pencil, Plus, Search, Sparkles } from "lucide-react";
+import { tourPriceSummary } from "@/lib/tourPricing";
+import type { TourPricing } from "@/types/tour";
 
 type Props = {
   catalogue: "tour" | "safari";
@@ -13,6 +15,7 @@ type Props = {
     type: string;
     price: number;
     currency: string;
+    pricing: TourPricing;
     isPublished: boolean;
     isPopular: boolean;
   }>;
@@ -66,7 +69,7 @@ export default function AdminTours({ tours, catalogue }: Props) {
                     <p className="mt-1 flex items-center gap-1 text-xs capitalize text-slate-500">{tour.type.replace("_", " ")}{tour.isPopular && <><span>·</span><Sparkles className="h-3 w-3 text-amber-500" /> Popular</>}</p>
                   </td>
                   <td className={`${adminTableCellClass} text-slate-600`}>{tour.category}</td>
-                  <td className={adminTableCellClass}>{tour.price > 0 ? `${tour.currency} ${tour.price}` : "Custom quote required"}</td>
+                  <td className={adminTableCellClass}>{(() => { const summary = tourPriceSummary(tour.price, tour.currency, tour.pricing); return <><p className="font-bold text-slate-900">{summary.label}</p><p className="mt-1 text-xs text-slate-500">{summary.caption}</p></>; })()}</td>
                   <td className={adminTableCellClass}>
                     <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${tour.isPublished ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
                       {tour.isPublished ? "Published" : "Draft"}

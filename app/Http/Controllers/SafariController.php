@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SiteSetting;
 use App\Models\Tour;
+use App\Support\TourPricing;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,7 +24,16 @@ class SafariController extends Controller
                 ->with('highlights:id,tour_id,label,sort_order')
                 ->orderBy('sort_order')
                 ->get()
-                ->map(fn (Tour $tour): array => [
+                ->map(function (Tour $tour): array {
+                    $duration = strtolower($tour->duration);
+                    $kind = match (true) {
+                        $tour->slug === 'custom-tanzania-safari', str_contains($duration, 'choice'), str_contains($duration, 'multi') => 'custom',
+                        preg_match('/(?:[2-9]|\d{2,})\s*[–-]?\s*(?:day|night)/', $duration) === 1,
+                        str_contains($duration, '7+ days') => 'overnight',
+                        default => 'day_trip',
+                    };
+
+                    return [
                     'slug' => $tour->slug,
                     'title' => $tour->title,
                     'description' => $tour->excerpt,
@@ -32,8 +42,11 @@ class SafariController extends Controller
                     'location' => $tour->location,
                     'price' => (float) $tour->price,
                     'currency' => $tour->currency,
+                    'kind' => $kind,
+                    'pricing' => TourPricing::payload($tour),
                     'highlights' => $tour->highlights->pluck('label')->values(),
-                ]),
+                    ];
+                }),
         ]);
     }
 }

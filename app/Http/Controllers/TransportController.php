@@ -99,6 +99,9 @@ class TransportController extends Controller
     {
         if (! in_array($data['trip_type'], ['one-way', 'return'], true)) return [null, null, null];
 
+        $capacity = ['sedan' => 3, 'suv-minivan' => 6, 'van' => 14, 'minibus' => 28][$data['vehicle_category']] ?? 0;
+        if ((int) $data['passengers'] > $capacity) return [null, null, ['reason' => 'vehicle_capacity']];
+
         $routes = TransportRoute::query()->where('is_active', true)->get();
         $route = $routes->first(function (TransportRoute $route) use ($data): bool {
             $forward = $this->locationMatches($route->pickup_location, $data['pickup_location']) && $this->locationMatches($route->destination, $data['destination']);

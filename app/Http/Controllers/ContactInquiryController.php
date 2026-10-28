@@ -16,7 +16,7 @@ class ContactInquiryController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
-            'email' => ['required', 'email', 'max:190'],
+            'email' => ['nullable', 'required_if:preferred_contact,email', 'email', 'max:190'],
             'phone' => ['nullable', 'required_if:preferred_contact,whatsapp', 'string', 'min:7', 'max:40', 'regex:/^[0-9+()\\-\\s]+$/'],
             'preferred_contact' => ['required', 'in:email,whatsapp'],
             'topic' => ['required', 'in:tour,safari,transport,booking,partnership,other'],

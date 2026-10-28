@@ -85,7 +85,7 @@ export function AdminLayout({ title, children }: { title: string; children: Reac
   }, [mobileOpen]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => router.reload({ only: ["adminCounts"], preserveScroll: true, preserveState: true }), 30000);
+    const timer = window.setInterval(() => router.reload({ only: ["adminCounts"] }), 30000);
     return () => window.clearInterval(timer);
   }, []);
 

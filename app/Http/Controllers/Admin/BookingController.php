@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Mail\BookingConfirmed;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class BookingController extends Controller
 {
@@ -62,7 +67,7 @@ class BookingController extends Controller
 
     public function show(Booking $booking): Response
     {
-        $booking->load('tour:id,title,slug,cover_image_path');
+        $booking->load('tour:id,title,slug,cover_image_path,booking_style_label');
 
         return Inertia::render('Admin/Bookings/Show', [
             'booking' => [
@@ -75,6 +80,7 @@ class BookingController extends Controller
                 'children' => $booking->children,
                 'childrenAges' => $booking->children_ages ?? [],
                 'bookingType' => $booking->booking_type,
+                'bookingStyleLabel' => $booking->tour->booking_style_label,
                 'pickupZone' => $booking->pickup_zone,
                 'preferredContact' => $booking->preferred_contact,
                 'estimatedPrice' => $booking->estimated_price ? (float) $booking->estimated_price : null,
@@ -85,6 +91,14 @@ class BookingController extends Controller
                 'status' => $booking->status,
                 'quotedPrice' => $booking->quoted_price ? (float) $booking->quoted_price : null,
                 'quotedCurrency' => $booking->quoted_currency,
+                'depositAmount' => $booking->deposit_amount ? (float) $booking->deposit_amount : null,
+                'amountPaid' => (float) $booking->amount_paid,
+                'paymentStatus' => $booking->payment_status,
+                'invoiceNumber' => $booking->invoice_number,
+                'confirmationSentAt' => $booking->confirmation_sent_at?->format('F j, Y \a\t H:i'),
+                'confirmationUrl' => $booking->invoice_number
+                    ? URL::signedRoute('bookings.confirmation', ['booking' => $booking])
+                    : null,
                 'source' => $booking->source,
                 'createdAt' => $booking->created_at->format('F j, Y \a\t H:i'),
                 'contactedAt' => $booking->contacted_at?->format('F j, Y \a\t H:i'),
@@ -110,7 +124,27 @@ class BookingController extends Controller
             'admin_notes' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'quoted_price' => ['sometimes', 'nullable', 'numeric', 'min:0', 'max:99999999'],
             'quoted_currency' => ['sometimes', 'nullable', Rule::in(['USD', 'TZS', 'EUR', 'GBP'])],
+            'deposit_amount' => ['sometimes', 'nullable', 'numeric', 'min:0', 'max:99999999'],
+            'amount_paid' => ['sometimes', 'required', 'numeric', 'min:0', 'max:99999999'],
+            'payment_status' => ['sometimes', 'required', Rule::in(['unpaid', 'partially_paid', 'paid', 'refunded'])],
         ]);
+
+        if (($validated['status'] ?? null) === 'confirmed' && ! $booking->invoice_number) {
+            return back()->withErrors(['status' => 'Use “Confirm & send” to confirm this booking and create its invoice.']);
+        }
+
+        $total = $validated['quoted_price'] ?? $booking->quoted_price;
+        if ($total === null && ((float) ($validated['deposit_amount'] ?? 0) > 0 || (float) ($validated['amount_paid'] ?? 0) > 0)) {
+            return back()->withErrors(['quoted_price' => 'Enter the final quote before adding a deposit or payment.']);
+        }
+        if ($total !== null && (float) ($validated['deposit_amount'] ?? 0) > (float) $total) {
+            return back()->withErrors(['deposit_amount' => 'The deposit cannot be greater than the final quote.']);
+        }
+        if ($total !== null && (float) ($validated['amount_paid'] ?? 0) > (float) $total) {
+            return back()->withErrors(['amount_paid' => 'The amount paid cannot be greater than the final quote.']);
+        }
+
+        $validated = $this->normalisePaymentStatus($validated, $booking);
 
         if (isset($validated['status']) && $validated['status'] !== $booking->status) {
             $validated['contacted_at'] = $validated['status'] === 'contacted'
@@ -127,6 +161,73 @@ class BookingController extends Controller
         $booking->update($validated);
 
         return back()->with('success', "Booking {$booking->reference} updated.");
+    }
+
+    public function confirm(Request $request, Booking $booking): RedirectResponse
+    {
+        if (in_array($booking->status, ['completed', 'cancelled'], true)) {
+            return back()->withErrors([
+                'status' => 'Reopen this booking before sending a confirmation.',
+            ]);
+        }
+
+        $validated = $request->validate([
+            'quoted_price' => ['required', 'numeric', 'min:0.01', 'max:99999999'],
+            'quoted_currency' => ['required', Rule::in(['USD', 'TZS', 'EUR', 'GBP'])],
+            'deposit_amount' => ['nullable', 'numeric', 'min:0', 'lte:quoted_price'],
+            'amount_paid' => ['nullable', 'numeric', 'min:0', 'lte:quoted_price'],
+            'payment_status' => ['required', Rule::in(['unpaid', 'partially_paid', 'paid', 'refunded'])],
+            'admin_notes' => ['nullable', 'string', 'max:5000'],
+        ]);
+
+        $validated = $this->normalisePaymentStatus($validated, $booking);
+
+        DB::transaction(function () use ($booking, $validated): void {
+            $booking->update([
+                ...$validated,
+                'amount_paid' => $validated['amount_paid'] ?? 0,
+                'status' => 'confirmed',
+                'confirmed_at' => $booking->confirmed_at ?? now(),
+                'cancelled_at' => null,
+                'invoice_number' => $booking->invoice_number ?: sprintf('CRT-INV-%s-%06d', now()->format('Y'), $booking->id),
+            ]);
+        });
+
+        $booking->refresh()->load('tour:id,title');
+        $confirmationUrl = URL::signedRoute('bookings.confirmation', ['booking' => $booking]);
+
+        if (! $booking->email) {
+            return back()->with('success', "Booking {$booking->reference} confirmed. No customer email was provided; send the confirmation using WhatsApp.");
+        }
+
+        try {
+            Mail::to($booking->email)->send(new BookingConfirmed($booking, $confirmationUrl));
+            $booking->update(['confirmation_sent_at' => now()]);
+        } catch (Throwable $exception) {
+            Log::error('Booking confirmation email could not be sent.', [
+                'reference' => $booking->reference,
+                'exception' => $exception,
+            ]);
+
+            return back()->with('error', "Booking {$booking->reference} was confirmed, but the email could not be sent. Use the WhatsApp confirmation link.");
+        }
+
+        return back()->with('success', "Booking {$booking->reference} confirmed and emailed to the customer.");
+    }
+
+    private function normalisePaymentStatus(array $validated, Booking $booking): array
+    {
+        if (($validated['payment_status'] ?? $booking->payment_status) === 'refunded') {
+            return $validated;
+        }
+
+        $total = (float) ($validated['quoted_price'] ?? $booking->quoted_price ?? 0);
+        $paid = (float) ($validated['amount_paid'] ?? $booking->amount_paid ?? 0);
+        $validated['payment_status'] = $paid <= 0
+            ? 'unpaid'
+            : ($total > 0 && $paid >= $total ? 'paid' : 'partially_paid');
+
+        return $validated;
     }
 
     public function destroy(Booking $booking): RedirectResponse

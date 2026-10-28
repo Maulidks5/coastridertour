@@ -1,0 +1,36 @@
+{
+  "license": "Pexels License",
+  "license_url": "https://www.pexels.com/license/",
+  "images": [
+    {
+      "file": "cover.webp",
+      "photographer": "sascha Mayer",
+      "source": "https://www.pexels.com/photo/scenic-view-of-lighted-tents-under-starry-sky-4882868/"
+    },
+    {
+      "file": "gallery/high-altitude-camp.webp",
+      "photographer": "Marina Zvada",
+      "source": "https://www.pexels.com/photo/camping-adventure-at-mount-kilimanjaro-base-camp-31168813/"
+    },
+    {
+      "file": "gallery/alpine-rest.webp",
+      "photographer": "Marina Zvada",
+      "source": "https://www.pexels.com/photo/hiker-resting-on-mount-kilimanjaro-s-rocky-slope-31047110/"
+    },
+    {
+      "file": "gallery/machame-hiking-team.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/people-in-a-travel-on-the-mount-kilimanjaro-15994023/"
+    },
+    {
+      "file": "gallery/summit-sunrise.webp",
+      "photographer": "Kilinge Adventures",
+      "source": "https://www.pexels.com/photo/a-man-standing-on-the-snow-covered-mountain-12592298/"
+    },
+    {
+      "file": "gallery/scenic-mountain-trail.webp",
+      "photographer": "Marina Zvada",
+      "source": "https://www.pexels.com/photo/hikers-ascend-path-with-kilimanjaro-in-view-35568137/"
+    }
+  ]
+}

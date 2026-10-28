@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "title": "Aerial View of City Buildings Near Body of Water",
+    "photographer": "George John",
+    "source": "https://www.pexels.com/photo/aerial-view-of-city-buildings-near-body-of-water-7101641/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/waterfront.webp",
+    "title": "Scenic Coastal View of Stone Town, Zanzibar",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/scenic-coastal-view-of-stone-town-zanzibar-37087436/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/zanzibari-door.webp",
+    "title": "Traditional Zanzibari Doorway in Stone Town",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/traditional-zanzibari-doorway-in-stone-town-37087439/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/historic-alley.webp",
+    "title": "Narrow Alleyway in Zanzibar's Stone Town",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/narrow-alleyway-in-zanzibar-s-stone-town-37087445/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/street-life.webp",
+    "title": "Street Scene in Stone Town, Zanzibar",
+    "photographer": "Qarim Zam",
+    "source": "https://www.pexels.com/photo/street-scene-in-stone-town-zanzibar-29205959/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/ornate-entrance.webp",
+    "title": "Shabby Wooden Entrance Door",
+    "photographer": "Julia Volk",
+    "source": "https://www.pexels.com/photo/shabby-wooden-entrance-door-7292746/",
+    "license": "Pexels License"
+  }
+]

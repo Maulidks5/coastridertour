@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "African elephants in the wild in Iringa, Tanzania",
+    "photographer": "Peter Chilumba",
+    "source": "https://www.pexels.com/photo/majestic-african-elephants-in-tanzania-s-wild-32313177/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/mikumi-zebra.webp",
+    "description": "Zebra grazing in Mikumi National Park, Tanzania",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/zebra-in-mikumi-national-park-tanzania-37087534/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/baby-elephant.webp",
+    "description": "Young elephant among tall grass in Tanzania",
+    "photographer": "Alex Levis",
+    "source": "https://www.pexels.com/photo/african-elephant-in-park-15247485/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/giraffes.webp",
+    "description": "Giraffes exploring the Tanzanian savanna",
+    "photographer": "Moses Londo",
+    "source": "https://www.pexels.com/photo/giraffe-in-the-savanna-10099899/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/lion.webp",
+    "description": "Lion photographed in Tanzania",
+    "photographer": "Bisakha Datta",
+    "source": "https://www.pexels.com/photo/close-up-shot-of-a-lion-6180778/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/mikumi-landscape.webp",
+    "description": "Wildlife landscape in Mikumi National Park, Tanzania",
+    "photographer": "Zenji",
+    "source": "https://www.pexels.com/photo/krajobraz-safari-dzikiej-przyrody-w-mikumi-w-tanzanii-39583944/",
+    "license": "Pexels License"
+  }
+]

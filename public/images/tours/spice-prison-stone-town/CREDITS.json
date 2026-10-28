@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Aerial view of historic Stone Town beside the Indian Ocean",
+    "photographer": "George John",
+    "source": "https://www.pexels.com/photo/aerial-view-of-city-buildings-near-body-of-water-7101641/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/spice-fruit-market.webp",
+    "description": "Zanzibar tropical fruit market",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/vibrant-zanzibar-fruit-market-display-37087449/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/cloves.webp",
+    "description": "Dried cloves",
+    "photographer": "Eva Bronzini",
+    "source": "https://www.pexels.com/photo/dried-cloves-in-close-up-shot-6087276/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/giant-tortoise.webp",
+    "description": "Aldabra giant tortoise in Zanzibar",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/close-up-of-aldabra-giant-tortoise-in-zanzibar-37087424/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/prison-island-boat.webp",
+    "description": "Traditional sailboat on Zanzibar’s turquoise sea",
+    "photographer": "Saila Holidays Zanzibar",
+    "source": "https://www.pexels.com/photo/people-on-sailboat-on-tropical-sea-26935707/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/stone-town-door.webp",
+    "description": "Traditional Zanzibari doorway in Stone Town",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/traditional-zanzibari-doorway-in-stone-town-37087439/",
+    "license": "Pexels License"
+  }
+]

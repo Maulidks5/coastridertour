@@ -29,7 +29,7 @@ export const SITE_CONFIG: SiteConfig = {
   seoTitle: "Coast Rider Tour Company Limited — Zanzibar Tours & Tanzania Safaris",
   seoDescription: "Explore Zanzibar, discover Tanzania safaris and book reliable private transport with Coast Rider Tour Company Limited.",
   logoPath: "/brand/coast-rider-logo.png",
-  ctaImagePath: "/images/coast-rider-placeholder.jpg",
+  ctaImagePath: "/images/experiences/cta-zanzibar.webp",
   whatsappNumber: "255671921474",
   whatsappMessage: "Hello Coast Rider Tour, I would like help planning my trip.",
   email: "info@coastridertour.com",

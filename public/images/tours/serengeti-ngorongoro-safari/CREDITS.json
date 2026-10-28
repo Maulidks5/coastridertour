@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Wildebeest herd beneath an acacia tree in Tanzania's Serengeti",
+    "photographer": "Amani Allan",
+    "source": "https://www.pexels.com/photo/serengeti-wildebeest-herd-in-tanzania-s-mara-region-29833434/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/ngorongoro-crater.webp",
+    "description": "Panoramic view of Ngorongoro Crater in Tanzania",
+    "photographer": "Dirk Pothen",
+    "source": "https://www.pexels.com/photo/panoramic-view-of-ngorongoro-crater-landscape-30630770/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/crater-game-drive.webp",
+    "description": "Safari vehicles on a dusty road in Ngorongoro Crater",
+    "photographer": "Sergey Guk",
+    "source": "https://www.pexels.com/photo/safari-vehicles-on-dusty-road-in-ngorongoro-crater-28708299/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/serengeti-lion.webp",
+    "description": "Male lion resting in the Serengeti savanna",
+    "photographer": "Tomáš Malík",
+    "source": "https://www.pexels.com/photo/male-lion-resting-in-serengeti-savanna-10399169/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/serengeti-elephants.webp",
+    "description": "African elephants grazing in the Serengeti landscape",
+    "photographer": "Prince III",
+    "source": "https://www.pexels.com/photo/african-elephants-in-serengeti-landscape-35327180/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/serengeti-cheetah.webp",
+    "description": "Cheetah in the golden grasslands of Serengeti National Park",
+    "photographer": "Alex Ning",
+    "source": "https://www.pexels.com/photo/cheetah-in-serengeti-national-park-tanzania-33650614/",
+    "license": "Pexels License"
+  }
+]

@@ -7,10 +7,26 @@
         <meta name="theme-color" content="#14213D">
         <meta name="robots" content="{{ request()->is('admin*') ? 'noindex,nofollow' : 'index,follow' }}">
         <link rel="canonical" href="{{ url()->current() }}">
+        <link rel="alternate" type="text/plain" href="{{ route('llms') }}" title="AI-readable site summary">
+        <link rel="alternate" type="text/plain" href="{{ route('llms.full') }}" title="AI-readable public catalogue">
         <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicon.png?v=coast-rider-2">
         <link rel="apple-touch-icon" href="/brand/favicon.png?v=coast-rider-2">
 
         <title inertia>{{ config('app.name', 'Coast Rider Tour Company Limited') }}</title>
+
+        <script type="application/ld+json">{!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'TravelAgency',
+            'name' => 'Coast Rider Tour Company Limited',
+            'url' => url('/'),
+            'logo' => url('/brand/coast-rider-logo.png'),
+            'areaServed' => ['Zanzibar', 'Tanzania'],
+            'sameAs' => [
+                'https://www.facebook.com/share/1EnsuYC6DD/',
+                'https://www.instagram.com/coastridertour/',
+                'https://www.tiktok.com/@coastridertour',
+            ],
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx'])

@@ -1,6 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import {
+    Binoculars,
+    CarFront,
     Check,
     Clock3,
     Copy,
@@ -87,6 +89,46 @@ export default function Contact({ content, submittedInquiry }: Props) {
                         <p className="mt-5 max-w-2xl text-base leading-8 text-white/75 md:text-lg">
                             {content.description}
                         </p>
+                    </div>
+                </section>
+
+                <section className="border-b border-border bg-white">
+                    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                        <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">
+                            Choose the quickest route
+                        </p>
+                        <div className="mt-5 grid gap-4 md:grid-cols-3">
+                            <Link
+                                href="/tours"
+                                className="flex items-center gap-4 rounded-2xl border border-border p-5 transition hover:border-[var(--turquoise)] hover:shadow-sm"
+                            >
+                                <Binoculars className="h-6 w-6 shrink-0 text-[var(--ocean)]" />
+                                <span>
+                                    <strong className="block">Choose a tour</strong>
+                                    <span className="text-xs text-muted-foreground">See prices and available experiences</span>
+                                </span>
+                            </Link>
+                            <Link
+                                href="/safaris#plan-safari"
+                                className="flex items-center gap-4 rounded-2xl border border-border p-5 transition hover:border-[var(--turquoise)] hover:shadow-sm"
+                            >
+                                <MapPin className="h-6 w-6 shrink-0 text-[var(--ocean)]" />
+                                <span>
+                                    <strong className="block">Plan a safari</strong>
+                                    <span className="text-xs text-muted-foreground">Tell us your parks, dates and style</span>
+                                </span>
+                            </Link>
+                            <Link
+                                href="/transport#request"
+                                className="flex items-center gap-4 rounded-2xl border border-border p-5 transition hover:border-[var(--turquoise)] hover:shadow-sm"
+                            >
+                                <CarFront className="h-6 w-6 shrink-0 text-[var(--ocean)]" />
+                                <span>
+                                    <strong className="block">Request transport</strong>
+                                    <span className="text-xs text-muted-foreground">Get a route and vehicle estimate</span>
+                                </span>
+                            </Link>
+                        </div>
                     </div>
                 </section>
 
@@ -272,11 +314,14 @@ export default function Contact({ content, submittedInquiry }: Props) {
                                     />
                                 </Field>
                                 <Field
-                                    label="Email address"
+                                    label={`Email (${form.data.preferred_contact === "email" ? "required" : "optional"})`}
                                     error={form.errors.email}
                                 >
                                     <input
-                                        required
+                                        required={
+                                            form.data.preferred_contact ===
+                                            "email"
+                                        }
                                         type="email"
                                         autoComplete="email"
                                         value={form.data.email}
@@ -419,6 +464,11 @@ export default function Contact({ content, submittedInquiry }: Props) {
                                     ? "Sending message…"
                                     : "Send message"}
                             </button>
+                            <p className="text-center text-xs leading-5 text-muted-foreground">
+                                No payment is requested through this form. We
+                                will first confirm availability, inclusions and
+                                the final price.
+                            </p>
                         </form>
                     </section>
                 </section>

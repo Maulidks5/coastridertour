@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateTourRequest;
 use App\Models\Tour;
 use App\Models\TourCategory;
+use App\Support\TourPricing;
 use App\Support\WebImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ class TourController extends Controller
                     'type' => $tour->experience_type,
                     'price' => (float) $tour->price,
                     'currency' => $tour->currency,
+                    'pricing' => TourPricing::payload($tour),
                     'isPublished' => $tour->is_published,
                     'isPopular' => $tour->is_popular,
                 ]),

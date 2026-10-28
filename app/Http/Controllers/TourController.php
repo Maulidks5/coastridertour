@@ -29,6 +29,8 @@ class TourController extends Controller
         $search = mb_substr($request->string('q')->trim()->toString(), 0, 100);
         $type = $safaris ? 'safari' : $request->string('type')->toString();
         $type = in_array($type, ['zanzibar_tour', 'water_sport'], true) ? $type : '';
+        $duration = $request->string('duration')->toString();
+        $duration = in_array($duration, ['half_day', 'full_day', 'multi_day'], true) ? $duration : '';
         $sort = $request->string('sort')->toString();
         $sort = in_array($sort, ['recommended', 'price_low', 'price_high', 'name'], true) ? $sort : 'recommended';
 
@@ -47,7 +49,16 @@ class TourController extends Controller
                     ->orWhere('excerpt', 'like', "%{$search}%")
                     ->orWhere('location', 'like', "%{$search}%");
             }))
-            ->when($type && ! $safaris, fn ($builder) => $builder->where('experience_type', $type));
+            ->when($type && ! $safaris, fn ($builder) => $builder->where('experience_type', $type))
+            ->when($duration === 'half_day', fn ($builder) => $builder->where(function ($durationQuery): void {
+                $durationQuery->where('duration', 'like', '%Half Day%')->orWhere('duration', 'like', '%Hour%');
+            }))
+            ->when($duration === 'full_day', fn ($builder) => $builder->where(function ($durationQuery): void {
+                $durationQuery->where('duration', 'like', '%Full Day%')->orWhere('duration', 'like', '%1 Day%');
+            }))
+            ->when($duration === 'multi_day', fn ($builder) => $builder->where(function ($durationQuery): void {
+                $durationQuery->where('duration', 'like', '%Days%')->orWhere('duration', 'like', '%Multi-day%')->orWhere('duration', 'like', '%Night%');
+            }));
 
         match ($sort) {
             'price_low' => $query->orderByRaw('price = 0')->orderBy('price')->orderBy('sort_order'),
@@ -56,7 +67,7 @@ class TourController extends Controller
             default => $query->orderByDesc('is_popular')->orderBy('sort_order'),
         };
 
-        $tours = $query->paginate(9)->withQueryString()->through(fn (Tour $tour): array => $this->tourCard($tour));
+        $tours = $query->paginate(12)->withQueryString()->through(fn (Tour $tour): array => $this->tourCard($tour));
 
         return Inertia::render('Tours/Index', [
             'tours' => $tours,
@@ -64,12 +75,15 @@ class TourController extends Controller
                 ->where('is_active', true)
                 ->where('slug', '!=', 'tanzania-safaris')
                 ->whereHas('tours', fn ($builder) => $builder->published()->where('experience_type', '!=', 'safari'))
+                ->withCount(['tours' => fn ($builder) => $builder->published()->where('experience_type', '!=', 'safari')])
                 ->orderBy('sort_order')
-                ->get(['name', 'slug']),
+                ->get(['id', 'name', 'slug'])
+                ->map(fn (TourCategory $item): array => ['name' => $item->name, 'slug' => $item->slug, 'count' => $item->tours_count]),
             'filters' => [
                 'q' => $search,
                 'category' => $category ?: null,
                 'type' => $type ?: null,
+                'duration' => $duration ?: null,
                 'sort' => $sort,
             ],
             'isSafari' => $safaris,

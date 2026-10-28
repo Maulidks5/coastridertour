@@ -12,10 +12,21 @@ type Props = { groups: Item[][] };
 export default function Faq({ groups }: Props) {
   const site = useSiteConfig();
   const [open, setOpen] = useState<number | null>(groups[0]?.[0]?.id ?? null);
+  const items = groups.flat();
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
 
   return <div className="min-h-screen bg-background">
     <Head title={`Frequently asked questions · ${site.name}`}>
       <meta name="description" content="Answers about tour bookings, safaris, transport, payments, pickup and travelling with Coast Rider Tour." />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
     </Head>
     <Navbar />
     <main>
@@ -37,7 +48,7 @@ export default function Faq({ groups }: Props) {
                   <button type="button" onClick={() => setOpen(expanded ? null : item.id)} aria-expanded={expanded} className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left font-bold md:px-6">
                     <span>{item.question}</span><ChevronDown className={`h-5 w-5 shrink-0 text-[var(--ocean)] transition-transform ${expanded ? "rotate-180" : ""}`} />
                   </button>
-                  {expanded && <div className="px-5 pb-5 text-sm leading-7 text-muted-foreground md:px-6"><p className="whitespace-pre-line">{item.answer}</p></div>}
+                  <div className={expanded ? "px-5 pb-5 text-sm leading-7 text-muted-foreground md:px-6" : "hidden"}><p className="whitespace-pre-line">{item.answer}</p></div>
                 </article>;
               })}
             </div>

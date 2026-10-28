@@ -13,5 +13,41 @@ export function tourPriceSummary(price: number, currency: string, pricing?: Tour
         const first = pricing.privateTiers.find((tier) => tier.price !== null);
         if (first?.price !== null && first) return { label: money(first.price), caption: "From per private group" };
     }
-    return { label: "Request a quote", caption: "Custom pricing" };
+    return price > 0
+        ? { label: money(price), caption: "From per person" }
+        : { label: "Request a quote", caption: "Custom pricing" };
+}
+
+export function preferredBookingType(pricing: TourPricing): "shared" | "private" {
+    return pricing.privateAvailable ? "private" : "shared";
+}
+
+export function calculateTourTotal(
+    pricing: TourPricing,
+    adults: number,
+    children: number,
+    infants: number,
+    bookingType: "shared" | "private" = preferredBookingType(pricing),
+): number | null {
+    if (bookingType === "private" && pricing.privateAvailable) {
+        if (pricing.privatePricingModel === "quote_only") return null;
+
+        if (pricing.privatePricingModel === "per_person_tiered") {
+            const totalGuests = adults + children + infants;
+            if (totalGuests > pricing.privateMaxOnlineGuests) return null;
+            const tier = pricing.privatePerPersonTiers.find(
+                (item) => adults >= item.min && adults <= item.max,
+            );
+            if (!tier || tier.price === null || (children > 0 && pricing.privateChildPrice === null) || (infants > 0 && pricing.privateInfantPrice === null)) return null;
+            return tier.price * adults + (pricing.privateChildPrice ?? 0) * children + (pricing.privateInfantPrice ?? 0) * infants;
+        }
+
+        const guests = adults + children + infants;
+        const tier = pricing.privateTiers.find((item) => guests >= item.min && guests <= item.max);
+        if (!tier || tier.price === null) return null;
+        return tier.price + (pricing.privateChildSupplement ?? 0) * (children + infants);
+    }
+
+    if (bookingType !== "shared" || !pricing.sharedAvailable || pricing.sharedAdultPrice === null || (children > 0 && pricing.sharedChildPrice === null) || (infants > 0 && pricing.sharedInfantPrice === null)) return null;
+    return pricing.sharedAdultPrice * adults + (pricing.sharedChildPrice ?? 0) * children + (pricing.sharedInfantPrice ?? 0) * infants;
 }

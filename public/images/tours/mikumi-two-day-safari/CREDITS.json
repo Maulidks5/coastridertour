@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Wildebeest herd across the plains of Mikumi National Park",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/wildebeest-migration-in-mikumi-national-park-37087533/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/mikumi-giraffe.webp",
+    "description": "Giraffe standing in Mikumi National Park",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/giraffe-standing-in-mikumi-national-park-37087483/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/mikumi-zebras.webp",
+    "description": "Zebras grazing in Mikumi National Park",
+    "photographer": "Alex Levis",
+    "source": "https://www.pexels.com/photo/dazzle-of-zebras-on-green-grass-field-12637589/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/game-drive.webp",
+    "description": "Safari vehicles travelling on a Tanzanian dirt road",
+    "photographer": "Kureng Workx",
+    "source": "https://www.pexels.com/photo/a-convoy-of-safari-jeeps-on-dirt-road-4404518/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/safari-guests.webp",
+    "description": "Travellers enjoying a safari experience in Tanzania",
+    "photographer": "Bujo Tours",
+    "source": "https://www.pexels.com/photo/friends-on-safari-vacation-4161053/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/safari-lodge.webp",
+    "description": "Safari lodge surrounded by vegetation in Tanzania",
+    "photographer": "Boaz Mashauri",
+    "source": "https://www.pexels.com/photo/man-in-front-of-a-safari-lodge-in-arusha-tanzania-39177624/",
+    "license": "Pexels License"
+  }
+]

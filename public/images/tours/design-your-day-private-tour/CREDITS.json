@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Aerial view of a tropical sandbar",
+    "photographer": "Taryn Elliott",
+    "source": "https://www.pexels.com/photo/aerial-view-of-sandbar-5859220/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/stone-town.webp",
+    "description": "Aerial view of historic Stone Town beside the Indian Ocean",
+    "photographer": "George John",
+    "source": "https://www.pexels.com/photo/aerial-view-of-city-buildings-near-body-of-water-7101641/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/spice-farm.webp",
+    "description": "Zanzibar tropical fruit market",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/vibrant-zanzibar-fruit-market-display-37087449/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/jozani-forest.webp",
+    "description": "Red colobus monkey in Jozani Forest, Zanzibar",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/red-colobus-monkey-in-jozani-forest-zanzibar-37087527/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/ocean-adventure.webp",
+    "description": "Boat and people on the ocean shore in Zanzibar",
+    "photographer": "Saila Holidays Zanzibar",
+    "source": "https://www.pexels.com/photo/boats-and-people-on-ocean-shore-in-zanzibar-25706804/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/sunset-dhow.webp",
+    "description": "Dhow sailing at sunset in Zanzibar",
+    "photographer": "Gavin Rain",
+    "source": "https://www.pexels.com/photo/sailboat-at-sea-during-sunset-14093348/",
+    "license": "Pexels License"
+  }
+]

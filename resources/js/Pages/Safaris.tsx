@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import {
     ArrowRight,
     CalendarDays,
@@ -14,6 +14,8 @@ import {
 import { Navbar } from "@/Components/Navbar";
 import { Footer } from "@/Components/Footer";
 import { getWhatsAppLink, useSiteConfig } from "@/config/site";
+import { tourPriceSummary } from "@/lib/tourPricing";
+import type { TourPricing } from "@/types/tour";
 
 type SafariIdea = {
     slug: string;
@@ -24,6 +26,8 @@ type SafariIdea = {
     location: string;
     price: number;
     currency: string;
+    kind: "day_trip" | "overnight" | "custom";
+    pricing: TourPricing;
     highlights: string[];
 };
 type Props = {
@@ -32,6 +36,7 @@ type Props = {
     ideas: SafariIdea[];
 };
 type FormData = {
+    safari_slug: string;
     name: string;
     email: string;
     whatsapp: string;
@@ -42,6 +47,7 @@ type FormData = {
     children: number;
     parks: string[];
     accommodation: string;
+    stay_style: string;
     arrival_point: string;
     budget: string;
     notes: string;
@@ -59,7 +65,34 @@ const parks = [
 ];
 export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
     const site = useSiteConfig();
+    const page = usePage();
+    const query = new URLSearchParams(page.url.split("?")[1]?.split("#")[0] ?? "");
+    const selectedSafari = ideas.find((idea) => idea.slug === query.get("safari"));
+    const selectedSafariText = selectedSafari
+        ? `${selectedSafari.title} ${selectedSafari.location} ${selectedSafari.highlights.join(" ")}`.toLowerCase()
+        : "";
+    const selectedParks = parks.filter(
+        (park) => park !== "Not sure" && selectedSafariText.includes(park.toLowerCase()),
+    );
+    const selectedDays = selectedSafari
+        ? Math.min(30, Math.max(1, Number(selectedSafari.duration.match(/\d+/)?.[0]) || 3))
+        : 3;
+    const selectedPrice = selectedSafari
+        ? tourPriceSummary(
+              selectedSafari.price,
+              selectedSafari.currency,
+              selectedSafari.pricing,
+          )
+        : null;
+    const requestedAdults = Math.min(30, Math.max(1, Number(query.get("adults")) || 2));
+    const requestedChildren = Math.min(20, Math.max(0, Number(query.get("children")) || 0));
     const [loadHeroVideo, setLoadHeroVideo] = useState(false);
+    const [ideaFilter, setIdeaFilter] = useState<
+        "all" | SafariIdea["kind"]
+    >("all");
+    const filteredIdeas = ideas.filter(
+        (idea) => ideaFilter === "all" || idea.kind === ideaFilter,
+    );
     useEffect(() => {
         const connection = (
             navigator as Navigator & {
@@ -75,16 +108,18 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const { data, setData, post, processing, errors, recentlySuccessful } =
         useForm<FormData>({
+            safari_slug: selectedSafari?.slug ?? "",
             name: "",
             email: "",
             whatsapp: "",
             preferred_contact: "whatsapp",
             start_date: "",
-            days: 3,
-            adults: 2,
-            children: 0,
-            parks: [],
+            days: selectedDays,
+            adults: requestedAdults,
+            children: requestedChildren,
+            parks: selectedParks,
             accommodation: "Mid-range",
+            stay_style: "No preference",
             arrival_point: "Zanzibar",
             budget: "",
             notes: "",
@@ -94,13 +129,20 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
     useEffect(() => {
         try {
             const saved = localStorage.getItem("coast-rider-safari-draft");
-            if (saved)
+            if (saved) {
+                const draft = JSON.parse(saved) as Partial<FormData>;
                 setData({
                     ...data,
-                    ...JSON.parse(saved),
+                    ...draft,
+                    safari_slug: selectedSafari?.slug ?? draft.safari_slug ?? "",
+                    adults: query.has("adults") ? requestedAdults : draft.adults ?? data.adults,
+                    children: query.has("children") ? requestedChildren : draft.children ?? data.children,
+                    days: selectedSafari ? selectedDays : draft.days ?? data.days,
+                    parks: selectedSafari ? selectedParks : draft.parks ?? data.parks,
                     consent: false,
                     website: "",
                 });
+            }
         } catch {}
     }, []);
     useEffect(() => {
@@ -221,6 +263,26 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                         </div>
                     </div>
                 </section>
+                <section className="border-b border-border bg-white">
+                    <div className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
+                        {[
+                            ["Private planning", "A route built around your dates and group."],
+                            ["Clear inclusions", "Park fees, transport and stays itemised."],
+                            ["Flexible comfort", "Budget, mid-range or luxury options."],
+                            ["No payment now", "Review the plan and quote before confirming."],
+                        ].map(([title, description]) => (
+                            <div key={title} className="flex gap-3">
+                                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[var(--turquoise)]" />
+                                <div>
+                                    <p className="text-sm font-bold">{title}</p>
+                                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                        {description}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
                 <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-20 lg:px-8">
                     <div className="max-w-2xl">
                         <p className="text-xs font-bold uppercase tracking-[.2em] text-[var(--turquoise)]">
@@ -235,8 +297,45 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                             quote.
                         </p>
                     </div>
+                    <div
+                        className="mt-7 flex flex-wrap gap-2"
+                        aria-label="Filter safari ideas"
+                    >
+                        {[
+                            ["all", "All safaris"],
+                            ["day_trip", "Day trips"],
+                            ["overnight", "Overnight safaris"],
+                            ["custom", "Tailor-made"],
+                        ].map(([value, label]) => (
+                            <button
+                                key={value}
+                                type="button"
+                                onClick={() =>
+                                    setIdeaFilter(
+                                        value as "all" | SafariIdea["kind"],
+                                    )
+                                }
+                                className={`rounded-full px-4 py-2 text-sm font-bold transition ${ideaFilter === value ? "bg-[var(--ocean)] text-white" : "border border-border bg-white text-foreground hover:border-[var(--ocean)]"}`}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
                     <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {ideas.map((idea) => (
+                        {filteredIdeas.map((idea) => {
+                            const price = tourPriceSummary(
+                                idea.price,
+                                idea.currency,
+                                idea.pricing,
+                            );
+                            const kindLabel =
+                                idea.kind === "day_trip"
+                                    ? "Day trip"
+                                    : idea.kind === "overnight"
+                                      ? "Overnight safari"
+                                      : "Tailor-made";
+
+                            return (
                             <article
                                 key={idea.title}
                                 className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-soft)]"
@@ -255,6 +354,9 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#10182d]/70 via-transparent to-black/10" />
                                     <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[var(--ocean)] shadow-sm">
                                         {idea.duration}
+                                    </span>
+                                    <span className="absolute right-4 top-4 rounded-full bg-[#071d2b]/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur">
+                                        {kindLabel}
                                     </span>
                                     <span className="absolute bottom-4 left-4 inline-flex items-center gap-1.5 text-xs font-semibold text-white">
                                         <MapPin className="h-3.5 w-3.5" />
@@ -285,12 +387,10 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                                     </div>
                                     <div className="mt-5 border-t border-border pt-4">
                                         <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                                            Price
+                                            {price.caption}
                                         </p>
                                         <p className="font-display text-lg font-bold text-[var(--ocean)]">
-                                            {idea.price > 0
-                                                ? `${idea.currency} ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(idea.price)} / adult`
-                                                : "Custom quote required"}
+                                            {price.label}
                                         </p>
                                         <Link
                                             href={`/tours/${idea.slug}`}
@@ -302,7 +402,8 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                                     </div>
                                 </div>
                             </article>
-                        ))}
+                            );
+                        })}
                     </div>
                 </section>
                 <section className="bg-[var(--sand)]/55">
@@ -404,6 +505,28 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                                 Send the essentials. No payment is required, and
                                 this request does not confirm a booking.
                             </p>
+                            <div className="mt-6 rounded-2xl border border-[var(--gold)]/35 bg-[var(--sand)]/65 p-5">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                                    How safari pricing works
+                                </p>
+                                {selectedPrice ? (
+                                    <>
+                                        <p className="mt-2 font-display text-3xl font-bold text-[var(--ocean)]">
+                                            {selectedPrice.label}
+                                        </p>
+                                        <p className="mt-1 text-xs font-semibold text-foreground/70">
+                                            {selectedPrice.caption} · planning price
+                                        </p>
+                                    </>
+                                ) : (
+                                    <p className="mt-2 font-display text-2xl font-bold text-[var(--ocean)]">
+                                        Personalised quote
+                                    </p>
+                                )}
+                                <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                                    Your final price is confirmed from the travel date, group size, route, transport and accommodation selected below. Nothing is charged before you approve the written quote.
+                                </p>
+                            </div>
                             <div className="mt-6 space-y-3 text-sm">
                                 {[
                                     "A route matched to your dates",
@@ -435,6 +558,24 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                                 <div className="rounded-xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
                                     Safari request received. Our team will
                                     contact you shortly.
+                                </div>
+                            )}
+                            {selectedSafari && (
+                                <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-[var(--turquoise)]/25 bg-[var(--turquoise)]/5 p-4">
+                                    <div>
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--turquoise)]">Selected safari</p>
+                                        <p className="mt-1 font-display text-lg font-bold text-[var(--ocean)]">{selectedSafari.title}</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">{selectedSafari.duration} · {selectedSafari.location}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        {selectedPrice && (
+                                            <>
+                                                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{selectedPrice.caption}</p>
+                                                <p className="font-display text-xl font-bold text-[var(--gold)]">{selectedPrice.label}</p>
+                                            </>
+                                        )}
+                                        <Link href={`/tours/${selectedSafari.slug}`} className="mt-1 inline-block shrink-0 text-xs font-bold text-[var(--ocean)] hover:underline">View details</Link>
+                                    </div>
                                 </div>
                             )}
                             {Object.keys(errors).length > 0 && (
@@ -590,7 +731,7 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                             </Field>
                             <div className="grid gap-5 sm:grid-cols-2">
                                 <Field
-                                    label="Accommodation"
+                                    label="Budget / comfort level"
                                     error={errors.accommodation}
                                 >
                                     <select
@@ -609,6 +750,22 @@ export default function Safaris({ pageTitle, pageDescription, ideas }: Props) {
                                             "Luxury",
                                             "Not sure",
                                         ].map((x) => (
+                                            <option key={x}>{x}</option>
+                                        ))}
+                                    </select>
+                                </Field>
+                                <Field
+                                    label="Preferred accommodation"
+                                    error={errors.stay_style}
+                                >
+                                    <select
+                                        value={data.stay_style}
+                                        onChange={(e) =>
+                                            setData("stay_style", e.target.value)
+                                        }
+                                        className={input(errors.stay_style)}
+                                    >
+                                        {["Lodge", "Tented camp", "Lodge & camp mix", "No preference"].map((x) => (
                                             <option key={x}>{x}</option>
                                         ))}
                                     </select>

@@ -1,7 +1,7 @@
 import { AdminLayout } from "@/Components/AdminLayout";
 import { AdminStatusBadge } from "@/Components/AdminStatusBadge";
 import { Link } from "@inertiajs/react";
-import { ArrowRight, BookOpen, CalendarCheck2, CalendarClock, ClipboardList, FileText, GalleryHorizontalEnd, Settings2 } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarCheck2, CalendarClock, CarFront, ClipboardList, FileText, GalleryHorizontalEnd, MailQuestion, Settings2 } from "lucide-react";
 
 type Props = {
   stats: {
@@ -9,6 +9,8 @@ type Props = {
     pendingBookings: number;
     upcomingBookings: number;
     totalBookings: number;
+    newMessages: number;
+    newTransportRequests: number;
   };
   recentBookings: Array<{
     reference: string;
@@ -25,10 +27,13 @@ export default function AdminDashboard({ stats, recentBookings }: Props) {
     { label: "Pending requests", value: stats.pendingBookings, icon: CalendarClock, tone: "bg-amber-50 text-amber-700" },
     { label: "Upcoming trips", value: stats.upcomingBookings, icon: CalendarCheck2, tone: "bg-emerald-50 text-emerald-700" },
     { label: "All bookings", value: stats.totalBookings, icon: ClipboardList, tone: "bg-violet-50 text-violet-700" },
+    { label: "New messages", value: stats.newMessages, icon: MailQuestion, tone: "bg-rose-50 text-rose-700" },
+    { label: "Transport requests", value: stats.newTransportRequests, icon: CarFront, tone: "bg-cyan-50 text-cyan-700" },
   ];
   const contentShortcuts = [
     { label: "Homepage hero", description: "Edit the cinematic hero image, heading and calls to action.", href: "/admin/cms/hero-slides", icon: GalleryHorizontalEnd },
     { label: "Tours & safaris", description: "Add services, prices, details and gallery images.", href: "/admin/tours", icon: BookOpen },
+    { label: "Transport prices", description: "Manage fixed routes, vehicle prices and surcharges.", href: "/admin/transport-routes", icon: CarFront },
     { label: "Page content", description: "Edit Tours, Safaris, About and Contact headings.", href: "/admin/cms/settings?section=pages", icon: FileText },
     { label: "Site settings", description: "Update company, contact, social and SEO details.", href: "/admin/cms/settings?section=general", icon: Settings2 },
   ];
@@ -46,7 +51,7 @@ export default function AdminDashboard({ stats, recentBookings }: Props) {
         </Link>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {cards.map(({ label, value, icon: Icon, tone }) => (
           <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
@@ -65,7 +70,7 @@ export default function AdminDashboard({ stats, recentBookings }: Props) {
           <h2 className="font-display text-2xl font-bold">Manage website</h2>
           <p className="mt-1 text-sm text-slate-500">Quick access to the content your visitors see.</p>
         </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {contentShortcuts.map(({ label, description, href, icon: Icon }) => (
             <Link key={href} href={href} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--turquoise)] hover:shadow-md">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--sand)] text-[var(--ocean)]"><Icon className="h-5 w-5" /></span>

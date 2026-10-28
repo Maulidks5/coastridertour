@@ -33,6 +33,7 @@ final class TourPricing
             'privateMaxOnlineGuests' => (int) ($tour->private_max_online_guests ?: 10),
             'largeGroupQuote' => (bool) $tour->large_group_quote,
             'pricingNote' => $tour->pricing_note,
+            'bookingStyleLabel' => $tour->booking_style_label,
         ];
     }
 
@@ -50,7 +51,8 @@ final class TourPricing
         $model = $tour->private_pricing_model ?: 'group_total';
         if ($model === 'quote_only') return null;
         if ($model === 'per_person_tiered') {
-            if ($adults > (int) ($tour->private_max_online_guests ?: 10)) return null;
+            $guests = $adults + count($ages);
+            if ($guests > (int) ($tour->private_max_online_guests ?: 10)) return null;
             $adultRate = match (true) {
                 $adults === 1 => $tour->private_1_person_price,
                 $adults === 2 => $tour->private_2_person_price,

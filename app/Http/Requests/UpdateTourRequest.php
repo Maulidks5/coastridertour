@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class UpdateTourRequest extends FormRequest
 {
@@ -57,5 +58,35 @@ class UpdateTourRequest extends FormRequest
             'is_popular' => ['boolean'],
             'is_published' => ['boolean'],
         ];
+    }
+
+    public function after(): array
+    {
+        return [function (Validator $validator): void {
+            if (! $this->boolean('is_published')) return;
+
+            $shared = $this->boolean('shared_available');
+            $private = $this->boolean('private_available');
+
+            if (! $shared && ! $private) {
+                $validator->errors()->add('shared_available', 'A published experience must offer shared booking, private booking, or a private custom quote.');
+            }
+            if ($shared && ! is_numeric($this->input('shared_adult_price'))) {
+                $validator->errors()->add('shared_adult_price', 'Enter the adult price before publishing shared booking.');
+            }
+            if ($private && $this->input('private_pricing_model') === 'per_person_tiered') {
+                foreach (['private_1_person_price', 'private_2_person_price', 'private_3_person_price', 'private_4_plus_person_price'] as $field) {
+                    if (! is_numeric($this->input($field))) $validator->errors()->add($field, 'Complete every adult tier before publishing.');
+                }
+            }
+            if ($private && $this->input('private_pricing_model') === 'group_total' && ! is_numeric($this->input('private_1_2_price'))) {
+                $validator->errors()->add('private_1_2_price', 'Enter at least the 1–2 guest group price before publishing.');
+            }
+
+            $tour = $this->route('tour');
+            if (! $this->hasFile('cover_image') && ! $tour?->cover_image_path) {
+                $validator->errors()->add('cover_image', 'Add a cover image before publishing.');
+            }
+        }];
     }
 }

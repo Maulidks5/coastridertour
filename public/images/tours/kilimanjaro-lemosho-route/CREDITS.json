@@ -1,0 +1,36 @@
+{
+  "license": "Pexels License",
+  "license_url": "https://www.pexels.com/license/",
+  "images": [
+    {
+      "file": "cover.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/landscape-with-the-mount-kilimanjaro-15994021/"
+    },
+    {
+      "file": "gallery/western-rainforest.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/photo-of-a-stream-in-a-forest-15993987/"
+    },
+    {
+      "file": "gallery/shira-plateau-trail.webp",
+      "photographer": "Penfran Tanzania",
+      "source": "https://www.pexels.com/photo/trekking-path-on-mount-kilimanjaro-in-tanzania-37808158/"
+    },
+    {
+      "file": "gallery/lemosho-tented-camp.webp",
+      "photographer": "Marina Zvada",
+      "source": "https://www.pexels.com/photo/camping-adventure-at-mount-kilimanjaro-base-camp-31168813/"
+    },
+    {
+      "file": "gallery/mountain-guides.webp",
+      "photographer": "Penfran Tanzania",
+      "source": "https://www.pexels.com/photo/adventurers-on-mount-kilimanjaro-36240283/"
+    },
+    {
+      "file": "gallery/summit-team.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/people-climbing-on-mountain-peak-15994039/"
+    }
+  ]
+}

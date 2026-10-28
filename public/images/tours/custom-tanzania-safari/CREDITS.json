@@ -1,0 +1,37 @@
+{
+    "collection": "Custom Tanzania Safari",
+    "license": "Pexels License",
+    "license_url": "https://www.pexels.com/license/",
+    "images": [
+        {
+            "file": "cover.webp",
+            "photographer": "Eva Purrer",
+            "source": "https://www.pexels.com/photo/serene-ngorongoro-crater-landscape-at-dusk-28838099/"
+        },
+        {
+            "file": "gallery/private-game-drive.webp",
+            "photographer": "Maxmillian Fredrick",
+            "source": "https://www.pexels.com/photo/safari-jeeps-at-ngorongoro-crater-tanzania-34271302/"
+        },
+        {
+            "file": "gallery/safari-lodge.webp",
+            "photographer": "Boaz Mashauri",
+            "source": "https://www.pexels.com/fr-fr/photo/un-homme-devant-un-lodge-de-safari-a-arusha-en-tanzanie-39177624/"
+        },
+        {
+            "file": "gallery/tanzania-leopard.webp",
+            "photographer": "LMorgan Creative",
+            "source": "https://www.pexels.com/photo/leopard-lying-on-a-tree-trunk-5138428/"
+        },
+        {
+            "file": "gallery/kilimanjaro-elephant.webp",
+            "photographer": "Florian Kriechbaumer",
+            "source": "https://www.pexels.com/photo/elephant-on-savanna-with-kilimanjaro-behind-26926276/"
+        },
+        {
+            "file": "gallery/ngorongoro-hyenas.webp",
+            "photographer": "Alex Ning",
+            "source": "https://www.pexels.com/pt-br/foto/hienas-na-cratera-de-ngorongoro-tanzania-33650553/"
+        }
+    ]
+}

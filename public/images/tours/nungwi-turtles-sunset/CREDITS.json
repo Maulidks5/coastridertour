@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Traditional dhow at sunset in Zanzibar",
+    "photographer": "Mustafa Mašetić",
+    "source": "https://www.pexels.com/photo/traditional-dhow-at-sunset-in-zanzibar-30311543/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/nungwi-turtle.webp",
+    "description": "Sea turtles in Nungwi, Zanzibar",
+    "photographer": "Mwangi Micha",
+    "source": "https://www.pexels.com/photo/photo-of-a-sea-turtle-in-the-water-19801671/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/sea-turtle.webp",
+    "description": "Sea turtle swimming underwater",
+    "photographer": "Jan Simons",
+    "source": "https://www.pexels.com/photo/close-up-shot-of-a-sea-turtle-swimming-underwater-7210379/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/nungwi-beach.webp",
+    "description": "Nungwi Beach and its turquoise water",
+    "photographer": "Benjamin Olivier Schaeuffele",
+    "source": "https://www.pexels.com/photo/wide-angle-view-of-a-beach-house-by-the-shore-23325941/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/dhow-beach.webp",
+    "description": "Traditional boat on a Zanzibar beach at sunset",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/serene-zanzibar-dhow-at-sunset-37087461/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/sunset-shore.webp",
+    "description": "Boats along the shore at sunset in northern Zanzibar",
+    "photographer": "Mwangi Micha",
+    "source": "https://www.pexels.com/photo/empty-boats-on-the-shore-at-sunset-19801667/",
+    "license": "Pexels License"
+  }
+]

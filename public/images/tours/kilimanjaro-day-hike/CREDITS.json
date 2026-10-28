@@ -1,0 +1,36 @@
+{
+  "license": "Pexels License",
+  "license_url": "https://www.pexels.com/license/",
+  "images": [
+    {
+      "file": "cover.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/people-in-a-travel-on-the-mount-kilimanjaro-15994023/"
+    },
+    {
+      "file": "gallery/summit-trail.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/people-climbing-on-mountain-peak-15994039/"
+    },
+    {
+      "file": "gallery/snowy-sunrise.webp",
+      "photographer": "Kilinge Adventures",
+      "source": "https://www.pexels.com/photo/a-man-standing-on-the-snow-covered-mountain-12592298/"
+    },
+    {
+      "file": "gallery/high-altitude-trail.webp",
+      "photographer": "Penfran Tanzania",
+      "source": "https://www.pexels.com/photo/trekking-path-on-mount-kilimanjaro-in-tanzania-37808158/"
+    },
+    {
+      "file": "gallery/kilimanjaro-hikers.webp",
+      "photographer": "Marina Zvada",
+      "source": "https://www.pexels.com/photo/hikers-ascend-path-with-kilimanjaro-in-view-35568137/"
+    },
+    {
+      "file": "gallery/rainforest-stream.webp",
+      "photographer": "Balazs Simon",
+      "source": "https://www.pexels.com/photo/photo-of-a-stream-in-a-forest-15993987/"
+    }
+  ]
+}

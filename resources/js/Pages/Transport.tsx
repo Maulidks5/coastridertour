@@ -131,6 +131,13 @@ function recommendedVehicle(passengers: number) {
             : "minibus";
 }
 
+const vehicleCapacity: Record<string, number> = {
+    sedan: 3,
+    "suv-minivan": 6,
+    van: 14,
+    minibus: 28,
+};
+
 type PricedRoute = {
     id: number;
     pickup: string;
@@ -564,8 +571,40 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                                 / vehicle
                                             </span>
                                         </p>
+                                        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pt-3">
+                                            {[
+                                                ["sedan", "Sedan"],
+                                                ["suv-minivan", "SUV / Minivan"],
+                                                ["van", "Van"],
+                                                ["minibus", "Minibus"],
+                                            ].map(([key, label]) =>
+                                                route.prices[key] != null ? (
+                                                    <span
+                                                        key={key}
+                                                        className="rounded-full bg-[var(--sand)] px-2.5 py-1 text-[10px] font-semibold text-foreground/75"
+                                                    >
+                                                        {label}: {route.currency}{" "}
+                                                        {route.prices[key]}
+                                                    </span>
+                                                ) : null,
+                                            )}
+                                        </div>
                                     </button>
                                 ))}
+                            </div>
+                            <div className="mt-6 grid gap-3 text-xs text-muted-foreground sm:grid-cols-3">
+                                <p className="flex gap-2 rounded-xl bg-[var(--sand)]/60 p-4">
+                                    <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--turquoise)]" />
+                                    Price is for the whole selected vehicle, not each passenger.
+                                </p>
+                                <p className="flex gap-2 rounded-xl bg-[var(--sand)]/60 p-4">
+                                    <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--turquoise)]" />
+                                    Return discount is calculated automatically when available.
+                                </p>
+                                <p className="flex gap-2 rounded-xl bg-[var(--sand)]/60 p-4">
+                                    <Info className="h-4 w-4 shrink-0 text-[var(--turquoise)]" />
+                                    Night trips and child seats may add the displayed surcharge.
+                                </p>
                             </div>
                         </div>
                     </section>
@@ -1100,6 +1139,24 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                         </div>
                                     )}
                                 </Field>
+                                {form.data.passengers > 28 && (
+                                    <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900">
+                                        Your group needs more than one vehicle.
+                                        We will prepare a custom fleet and price
+                                        after receiving this request.
+                                    </div>
+                                )}
+                                {form.data.passengers <= 28 &&
+                                    form.data.passengers >
+                                        (vehicleCapacity[
+                                            form.data.vehicle_category
+                                        ] ?? 0) && (
+                                        <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4 text-xs leading-5 text-red-800">
+                                            This vehicle is too small for your
+                                            group. Choose the recommended larger
+                                            vehicle to receive a valid estimate.
+                                        </div>
+                                    )}
                             </div>
                             {step === 2 && form.data.trip_type === "return" && (
                                 <div className="grid gap-5 sm:grid-cols-2">
@@ -1176,7 +1233,7 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                             {step === 2 &&
                                 form.data.service_type ===
                                     "airport-transfer" && (
-                                    <div className="grid gap-5 sm:grid-cols-2">
+                                    <div className="grid gap-5 sm:grid-cols-3">
                                         <Field
                                             label="Airport journey"
                                             error={
@@ -1202,6 +1259,22 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                                     Departure drop-off
                                                 </option>
                                             </select>
+                                        </Field>
+                                        <Field
+                                            label="Airline (optional)"
+                                            error={form.errors.airline}
+                                        >
+                                            <input
+                                                value={form.data.airline}
+                                                onChange={(e) =>
+                                                    form.setData(
+                                                        "airline",
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                placeholder="e.g. Precision Air"
+                                                className={input}
+                                            />
                                         </Field>
                                         <Field
                                             label="Flight number (recommended)"
@@ -1476,6 +1549,12 @@ function firstPrice(route: PricedRoute) {
 }
 function calculateEstimate(routes: PricedRoute[], data: any) {
     if (!["one-way", "return"].includes(data.trip_type)) return null;
+    if (
+        Number(data.passengers) > 28 ||
+        Number(data.passengers) >
+            (vehicleCapacity[data.vehicle_category] ?? 0)
+    )
+        return null;
     const route = routes.find(
         (item) =>
             (locationMatches(item.pickup, data.pickup_location) &&

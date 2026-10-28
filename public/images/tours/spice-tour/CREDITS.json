@@ -1,0 +1,44 @@
+[
+  {
+    "file": "cover.webp",
+    "description": "Zanzibar tropical fruit market",
+    "photographer": "Laura Meinhardt",
+    "source": "https://www.pexels.com/photo/vibrant-zanzibar-fruit-market-display-37087449/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/breadfruit.webp",
+    "description": "Breadfruit growing on a tree in Zanzibar",
+    "photographer": "Emanuel Feruzi",
+    "source": "https://www.pexels.com/photo/close-up-of-breadfruit-on-tree-in-zanzibar-35688634/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/cloves.webp",
+    "description": "Dried cloves",
+    "photographer": "Eva Bronzini",
+    "source": "https://www.pexels.com/photo/dried-cloves-in-close-up-shot-6087276/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/spices.webp",
+    "description": "Whole spices on a dark background",
+    "photographer": "Eva Bronzini",
+    "source": "https://www.pexels.com/photo/spices-on-a-dark-background-5741508/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/fruit-stall.webp",
+    "description": "Fresh fruit stall in Zanzibar",
+    "photographer": "Mouni Melouni",
+    "source": "https://www.pexels.com/photo/12695482/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/jackfruit.webp",
+    "description": "Jackfruit growing on a tropical tree",
+    "photographer": "Liton Miah",
+    "source": "https://www.pexels.com/photo/close-up-of-jackfruit-growing-on-tree-outdoors-37085536/",
+    "license": "Pexels License"
+  }
+]

@@ -68,7 +68,7 @@ class HandleInertiaRequests extends Middleware
                 'seoTitle' => $settings['default_seo_title'] ?? 'Coast Rider Tour Company Limited',
                 'seoDescription' => $settings['default_seo_description'] ?? '',
                 'logoPath' => $settings['logo_path'] ?? '/brand/coast-rider-logo.png',
-                'ctaImagePath' => $settings['cta_image_path'] ?? '/images/coast-rider-placeholder.jpg',
+                'ctaImagePath' => $settings['cta_image_path'] ?? '/images/experiences/cta-zanzibar.webp',
                 'phone' => $settings['phone'] ?? '+255 671 921 474',
                 'whatsappNumber' => $settings['whatsapp_number'] ?? '255671921474',
                 'whatsappMessage' => $settings['whatsapp_message'] ?? 'Hello Coast Rider Tour, I would like help planning my trip.',
@@ -86,7 +86,7 @@ class HandleInertiaRequests extends Middleware
                 'categories' => Schema::hasTable('tour_categories')
                     ? TourCategory::query()
                         ->where('is_active', true)
-                        ->where('slug', '!=', 'tanzania-safaris')
+                        ->whereNotIn('slug', ['tanzania-safaris', 'kilimanjaro-treks'])
                         ->whereHas('tours', fn ($query) => $query->published()->where('experience_type', '!=', 'safari'))
                         ->withCount(['tours' => fn ($query) => $query->published()])
                         ->orderBy('sort_order')

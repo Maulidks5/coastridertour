@@ -18,6 +18,10 @@ class Booking extends Model
         'estimated_currency',
         'quoted_price',
         'quoted_currency',
+        'deposit_amount',
+        'amount_paid',
+        'payment_status',
+        'invoice_number',
         'reference',
         'full_name',
         'email',
@@ -35,6 +39,7 @@ class Booking extends Model
         'source',
         'contacted_at',
         'confirmed_at',
+        'confirmation_sent_at',
         'cancelled_at',
     ];
 
@@ -47,8 +52,11 @@ class Booking extends Model
             'children_ages' => 'array',
             'estimated_price' => 'decimal:2',
             'quoted_price' => 'decimal:2',
+            'deposit_amount' => 'decimal:2',
+            'amount_paid' => 'decimal:2',
             'contacted_at' => 'datetime',
             'confirmed_at' => 'datetime',
+            'confirmation_sent_at' => 'datetime',
             'cancelled_at' => 'datetime',
         ];
     }

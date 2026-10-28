@@ -17,8 +17,8 @@ type Props = {
     total: number;
     links: Array<{ url: string | null; label: string; active: boolean }>;
   };
-  categories: Array<{ name: string; slug: string }>;
-  filters: { q: string; category: string | null; type: string | null; sort: string };
+  categories: Array<{ name: string; slug: string; count: number }>;
+  filters: { q: string; category: string | null; type: string | null; duration: string | null; sort: string };
   isSafari: boolean;
   basePath: string;
   eyebrow: string;
@@ -29,11 +29,11 @@ type Props = {
 export default function ToursIndex({ tours, categories, filters, isSafari, basePath, eyebrow, pageTitle, pageDescription }: Props) {
   const [search, setSearch] = useState(filters.q);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const hasFilters = Boolean(filters.q || filters.category || filters.type || filters.sort !== "recommended");
+  const hasFilters = Boolean(filters.q || filters.category || filters.type || filters.duration || filters.sort !== "recommended");
 
   function href(changes: Record<string, string | null>) {
     const params = new URLSearchParams();
-    const values = { q: filters.q, category: filters.category, type: filters.type, sort: filters.sort, ...changes };
+    const values = { q: filters.q, category: filters.category, type: filters.type, duration: filters.duration, sort: filters.sort, ...changes };
     Object.entries(values).forEach(([key, value]) => {
       if (value && !(key === "sort" && value === "recommended")) params.set(key, value);
     });
@@ -43,7 +43,7 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
 
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    router.get(basePath, { q: search || undefined, category: filters.category || undefined, type: filters.type || undefined, sort: filters.sort }, { preserveState: true, preserveScroll: true });
+    router.get(basePath, { q: search || undefined, category: filters.category || undefined, type: filters.type || undefined, duration: filters.duration || undefined, sort: filters.sort }, { preserveState: true, preserveScroll: true });
   }
   return (
     <div className="min-h-screen bg-background">
@@ -60,7 +60,7 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
         <section className="relative overflow-hidden bg-[var(--ocean)] text-white">
           <img src={isSafari ? "/images/experiences/hero-safari.webp" : "/images/experiences/hero-ocean.webp"} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#052f53]/95 via-[#052f53]/72 to-[#052f53]/25" />
-          <div className="relative mx-auto flex min-h-[22rem] max-w-7xl flex-col justify-end px-4 py-10 sm:min-h-[27rem] sm:px-6 md:py-14 lg:px-8">
+          <div className="relative mx-auto flex min-h-[19rem] max-w-7xl flex-col justify-end px-4 py-10 sm:min-h-[22rem] sm:px-6 md:py-12 lg:px-8">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--gold)]">
               {eyebrow}
             </p>
@@ -79,12 +79,12 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
             <p className="hidden text-sm text-muted-foreground sm:block">{tours.total} {tours.total === 1 ? "experience" : "experiences"}</p>
           </div>
 
-          <div className="mb-6 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)] sm:p-5">
+          <div className="mb-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
             <div className="flex flex-col gap-3 lg:flex-row">
               <form onSubmit={submitSearch} className="relative flex-1">
                 <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={isSafari ? "Search safari packages or locations…" : "Search tours, activities or locations…"} className="w-full rounded-xl border border-input bg-background py-3 pl-11 pr-24 text-sm outline-none focus:border-[var(--ocean)]" />
-                <button className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-[var(--ocean)] px-4 py-2 text-xs font-bold text-white">Search</button>
+                <input aria-label="Search experiences" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={isSafari ? "Search safari packages or locations…" : "Search tours, activities or locations…"} className="w-full rounded-xl border border-input bg-background py-3 pl-11 pr-24 text-sm outline-none transition focus:border-[var(--ocean)] focus:ring-2 focus:ring-[var(--ocean)]/15" />
+                <button className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-[var(--ocean)] px-4 py-2 text-xs font-bold text-white transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]">Search</button>
               </form>
               {!isSafari && (
                 <div className="hidden gap-2 lg:flex">
@@ -96,8 +96,16 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
                 </div>
               )}
               <label className="relative hidden lg:block">
+                <select aria-label="Filter by duration" value={filters.duration ?? ""} onChange={(event) => router.get(href({ duration: event.target.value || null }), {}, { preserveState: true, preserveScroll: true })} className="h-full min-h-11 rounded-xl border border-input bg-background px-3 py-3 text-xs font-bold outline-none">
+                  <option value="">Any duration</option>
+                  <option value="half_day">Half day</option>
+                  <option value="full_day">Full day</option>
+                  <option value="multi_day">Multi-day</option>
+                </select>
+              </label>
+              <label className="relative hidden lg:block">
                 <SlidersHorizontal className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <select value={filters.sort} onChange={(event) => router.get(href({ sort: event.target.value }), {}, { preserveState: true, preserveScroll: true })} className="h-full min-h-11 rounded-xl border border-input bg-background py-3 pl-10 pr-9 text-xs font-bold outline-none">
+                <select aria-label="Sort experiences" value={filters.sort} onChange={(event) => router.get(href({ sort: event.target.value }), {}, { preserveState: true, preserveScroll: true })} className="h-full min-h-11 rounded-xl border border-input bg-background py-3 pl-10 pr-9 text-xs font-bold outline-none">
                   <option value="recommended">Recommended</option>
                   <option value="price_low">Price: low to high</option>
                   <option value="price_high">Price: high to low</option>
@@ -106,12 +114,13 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
               </label>
             </div>
             <div className="mt-3 flex gap-2 lg:hidden">
-              <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-bold text-[var(--ocean)]"><SlidersHorizontal className="h-4 w-4" /> Filters{(filters.category || filters.type) ? " · Active" : ""}</button>
+              <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-bold text-[var(--ocean)]"><SlidersHorizontal className="h-4 w-4" /> Filters{(filters.category || filters.type || filters.duration) ? " · Active" : ""}</button>
               <label className="relative flex-1"><select aria-label="Sort tours" value={filters.sort} onChange={(event) => router.get(href({ sort: event.target.value }), {}, { preserveState: true, preserveScroll: true })} className="w-full rounded-xl border border-input bg-background px-3 py-3 text-sm font-bold outline-none"><option value="recommended">Recommended</option><option value="price_low">Price: low first</option><option value="price_high">Price: high first</option><option value="name">Name A–Z</option></select></label>
             </div>
             {filtersOpen && <div className="mt-3 grid gap-4 border-t border-border pt-4 lg:hidden">
               {!isSafari && <div><p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Experience type</p><div className="flex flex-wrap gap-2">{[{ label: "All types", value: null }, { label: "Tours", value: "zanzibar_tour" }, { label: "Water sports", value: "water_sport" }].map((type) => <Link key={type.label} href={href({ type: type.value })} className={`rounded-full px-4 py-2 text-xs font-bold ${filters.type === type.value ? "bg-[var(--ocean)] text-white" : "border border-border"}`}>{type.label}</Link>)}</div></div>}
               {!isSafari && <div><p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Category</p><div className="flex flex-wrap gap-2"><Link href={href({ category: null })} className={`rounded-full px-4 py-2 text-xs font-bold ${!filters.category ? "bg-[var(--ocean)] text-white" : "border border-border"}`}>All tours</Link>{categories.map((category) => <Link key={category.slug} href={href({ category: category.slug })} className={`rounded-full px-4 py-2 text-xs font-bold ${filters.category === category.slug ? "bg-[var(--ocean)] text-white" : "border border-border"}`}>{category.name}</Link>)}</div></div>}
+              <div><p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Duration</p><div className="flex flex-wrap gap-2">{[{ label: "Any duration", value: null }, { label: "Half day", value: "half_day" }, { label: "Full day", value: "full_day" }, { label: "Multi-day", value: "multi_day" }].map((item) => <Link key={item.label} href={href({ duration: item.value })} className={`rounded-full px-4 py-2 text-xs font-bold ${filters.duration === item.value ? "bg-[var(--ocean)] text-white" : "border border-border"}`}>{item.label}</Link>)}</div></div>
             </div>}
           </div>
 
@@ -137,7 +146,7 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
                     : "border border-border bg-card text-foreground hover:border-[var(--ocean)]"
                 }`}
               >
-                {category.name}
+                {category.name} <span className="ml-1 text-[10px] opacity-60">{category.count}</span>
               </Link>
             ))}
           </div>}
@@ -147,6 +156,7 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
             {filters.q && <Link href={href({ q: null })} className="inline-flex items-center gap-1 rounded-full bg-[var(--sand)] px-3 py-1.5 font-bold">Search: {filters.q} <X className="h-3 w-3" /></Link>}
             {filters.type && <Link href={href({ type: null })} className="inline-flex items-center gap-1 rounded-full bg-[var(--sand)] px-3 py-1.5 font-bold capitalize">{filters.type.replace("_", " ")} <X className="h-3 w-3" /></Link>}
             {filters.category && <Link href={href({ category: null })} className="inline-flex items-center gap-1 rounded-full bg-[var(--sand)] px-3 py-1.5 font-bold">{categories.find((item) => item.slug === filters.category)?.name ?? filters.category} <X className="h-3 w-3" /></Link>}
+            {filters.duration && <Link href={href({ duration: null })} className="inline-flex items-center gap-1 rounded-full bg-[var(--sand)] px-3 py-1.5 font-bold">{filters.duration.replace("_", " ")} <X className="h-3 w-3" /></Link>}
             {filters.sort !== "recommended" && <Link href={href({ sort: "recommended" })} className="inline-flex items-center gap-1 rounded-full bg-[var(--sand)] px-3 py-1.5 font-bold">Custom sort <X className="h-3 w-3" /></Link>}
           </div>}
 
@@ -156,7 +166,7 @@ export default function ToursIndex({ tours, categories, filters, isSafari, baseP
               <span>Showing {tours.from}–{tours.to} of {tours.total}</span>
               {hasFilters && <Link href={basePath} className="inline-flex items-center gap-1 font-bold text-[var(--ocean)]"><X className="h-3.5 w-3.5" /> Clear filters</Link>}
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {tours.data.map((tour) => <TourCard key={tour.slug} tour={tour} />)}
             </div>
             {tours.last_page > 1 && (

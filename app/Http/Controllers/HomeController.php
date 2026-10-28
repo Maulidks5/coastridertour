@@ -9,6 +9,7 @@ use App\Models\HomeContentItem;
 use App\Models\TourImage;
 use App\Models\HeroSlide;
 use App\Models\Testimonial;
+use App\Support\TourPricing;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,11 +34,22 @@ class HomeController extends Controller
             ->with('category:id,name,slug')
             ->orderByDesc('is_popular')
             ->orderBy('sort_order')
-            ->limit(9)
+            ->limit(3)
+            ->get();
+
+        $safaris = Tour::query()
+            ->published()
+            ->where('experience_type', 'safari')
+            ->with('category:id,name,slug')
+            ->orderByDesc('is_popular')
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->limit(4)
             ->get();
 
         return Inertia::render('Home', [
             'tours' => $tours->map(fn (Tour $tour): array => $this->tourCard($tour)),
+            'safaris' => $safaris->map(fn (Tour $tour): array => $this->tourCard($tour)),
             'categories' => TourCategory::query()
                 ->where('is_active', true)
                 ->whereHas('tours', fn ($query) => $query->published())
@@ -80,7 +92,7 @@ class HomeController extends Controller
                 ]),
             'galleryImages' => TourImage::query()
                 ->orderByDesc('id')
-                ->limit(5)
+                ->limit(6)
                 ->get(['path', 'alt_text'])
                 ->map(fn (TourImage $image): array => ['path' => $image->path, 'alt' => $image->alt_text ?? 'Zanzibar experience']),
             'heroSlides' => HeroSlide::query()
@@ -130,6 +142,7 @@ class HomeController extends Controller
             'experienceType' => $tour->experience_type,
             'minimumAge' => $tour->minimum_age,
             'difficulty' => $tour->difficulty,
+            'pricing' => TourPricing::payload($tour),
         ];
     }
 }

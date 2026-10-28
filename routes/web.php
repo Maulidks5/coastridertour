@@ -36,6 +36,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SeoController::class, 'llms'])->name('llms');
+Route::get('/llms-full.txt', [SeoController::class, 'llmsFull'])->name('llms.full');
 Route::get('/tours', [TourController::class, 'index'])->name('tours.index');
 Route::get('/safaris', SafariController::class)->name('safaris.index');
 Route::post('/safari-requests', [SafariRequestController::class, 'store'])->middleware('throttle:5,1')->name('safari-requests.store');
@@ -60,6 +61,9 @@ Route::post('/bookings', [BookingController::class, 'store'])
 Route::get('/booking/{booking}/success', [BookingController::class, 'success'])
     ->middleware('signed')
     ->name('bookings.success');
+Route::get('/booking/{booking}/confirmation', [BookingController::class, 'confirmation'])
+    ->middleware('signed')
+    ->name('bookings.confirmation');
 Route::post('/contact', [ContactInquiryController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 Route::get('/feedback', [TestimonialController::class, 'create'])->name('feedback.create');
 Route::post('/feedback', [TestimonialController::class, 'store'])->middleware('throttle:5,1')->name('feedback.store');
@@ -77,6 +81,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'admin.sess
     Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
     Route::patch('/bookings/{booking}', [AdminBookingController::class, 'update'])->name('bookings.update');
+    Route::post('/bookings/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('bookings.confirm');
     Route::delete('/bookings/{booking}', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
     Route::patch('/bookings/{reference}/restore', [AdminBookingController::class, 'restore'])->name('bookings.restore');
     Route::delete('/bookings/{reference}/force', [AdminBookingController::class, 'forceDestroy'])->name('bookings.force-destroy');

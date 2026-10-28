@@ -1,0 +1,51 @@
+[
+  {
+    "file": "cover.webp",
+    "title": "Aerial View of Zanzibar's Stunning Coastline",
+    "photographer": "Dajana Reçi",
+    "source": "https://www.pexels.com/photo/aerial-view-of-zanzibar-s-stunning-coastline-30125141/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/dolphins-surface.webp",
+    "title": "Dolphins Swimming on the Sea",
+    "photographer": "Taryn Elliott",
+    "source": "https://www.pexels.com/photo/dolphins-swimming-on-the-sea-5858973/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/dolphins-underwater.webp",
+    "title": "Underwater Photo of Three Dolphins Swimming",
+    "photographer": "Taryn Elliott",
+    "source": "https://www.pexels.com/photo/underwater-photo-of-three-dolphins-swimming-5858977/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/snorkeling-reef.webp",
+    "title": "Woman Snorkeling over Coral Reef",
+    "photographer": "Maahid Photos",
+    "source": "https://www.pexels.com/photo/woman-snorkeling-over-coral-reef-26927362/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/boat-trip.webp",
+    "title": "Boats in Blue Sea",
+    "photographer": "Keegan Checks",
+    "source": "https://www.pexels.com/photo/boats-in-blue-sea-10294338/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/island-beach.webp",
+    "title": "Palm Trees on Sandy Beach in Resort",
+    "photographer": "Saila Holidays Zanzibar",
+    "source": "https://www.pexels.com/photo/palm-trees-on-sandy-beach-in-resort-25706808/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/zanzibar-boats.webp",
+    "title": "Boats on Ocean under Clear Sky",
+    "photographer": "Keegan Checks",
+    "source": "https://www.pexels.com/photo/boats-on-ocean-under-clear-sky-10294339/",
+    "license": "Pexels License"
+  }
+]

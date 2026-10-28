@@ -31,6 +31,7 @@ export type TourPricing = {
     privateMaxOnlineGuests: number;
     largeGroupQuote: boolean;
     pricingNote: string | null;
+    bookingStyleLabel: string | null;
 };
 
 export type TourCategoryData = {

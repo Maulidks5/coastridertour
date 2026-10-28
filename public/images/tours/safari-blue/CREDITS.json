@@ -1,0 +1,51 @@
+[
+  {
+    "file": "cover.webp",
+    "title": "Aerial View of Sandbar",
+    "photographer": "Taryn Elliott",
+    "source": "https://www.pexels.com/photo/aerial-view-of-sandbar-5859220/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/dhow-red-sail.webp",
+    "title": "Red and White Boat on Sand Under Blue Sky",
+    "photographer": "Denys Gromov",
+    "source": "https://www.pexels.com/photo/red-and-white-boat-on-sand-under-blue-sky-4860993/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/dhow-beach.webp",
+    "title": "Brown Boat on the Shore",
+    "photographer": "Taryn Elliott",
+    "source": "https://www.pexels.com/photo/brown-boat-on-the-shore-5859098/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/aerial-shore.webp",
+    "title": "Boats and People on Ocean Shore in Zanzibar",
+    "photographer": "Saila Holidays Zanzibar",
+    "source": "https://www.pexels.com/photo/boats-and-people-on-ocean-shore-in-zanzibar-25706804/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/snorkeling.webp",
+    "title": "Man Posing in Diving Goggles",
+    "photographer": "Peter Holmboe",
+    "source": "https://www.pexels.com/photo/man-posing-in-diving-goggles-17077983/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/seafood.webp",
+    "title": "Seafood Dining Experience in Zanzibar",
+    "photographer": "Keegan Checks",
+    "source": "https://www.pexels.com/photo/seafood-dining-experience-in-zanzibar-29889222/",
+    "license": "Pexels License"
+  },
+  {
+    "file": "gallery/turquoise-beach.webp",
+    "title": "Beautiful Beachscape in Zanzibar, Tanzania",
+    "photographer": "Comrade Kileo",
+    "source": "https://www.pexels.com/photo/beautiful-beachscape-in-zanzibar-tanzania-35235415/",
+    "license": "Pexels License"
+  }
+]

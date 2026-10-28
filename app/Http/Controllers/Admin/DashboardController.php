@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Tour;
+use App\Models\ContactInquiry;
+use App\Models\TransportRequest;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,6 +20,8 @@ class DashboardController extends Controller
                 'pendingBookings' => Booking::query()->where('status', 'pending')->count(),
                 'upcomingBookings' => Booking::query()->whereDate('travel_date', '>=', today())->count(),
                 'totalBookings' => Booking::query()->count(),
+                'newMessages' => ContactInquiry::query()->where('status', 'new')->count(),
+                'newTransportRequests' => TransportRequest::query()->where('status', 'new')->count(),
             ],
             'recentBookings' => Booking::query()
                 ->with('tour:id,title')
