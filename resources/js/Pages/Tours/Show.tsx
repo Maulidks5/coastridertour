@@ -24,6 +24,8 @@ export default function TourShow({ tour, relatedTours }: Props) {
     return images.filter((image, index) => images.findIndex((item) => item.path === image.path) === index);
   }, [tour.image, tour.images, tour.title]);
   const isSafari = tour.experienceType === "safari";
+  const isKilimanjaro = tour.experienceType === "kilimanjaro";
+  const usesTailoredQuote = isSafari || isKilimanjaro;
   const requestHref = isSafari
     ? `/safaris?safari=${encodeURIComponent(tour.slug)}#plan-safari`
     : `/book/${tour.slug}`;
@@ -34,7 +36,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
   const isQuoteOnly = tour.pricing.privateAvailable
     && tour.pricing.privatePricingModel === "quote_only"
     && !tour.pricing.sharedAvailable;
-  const primaryCta = isSafari || isQuoteOnly || tour.price <= 0 ? "Request a quote" : "Request to book";
+  const primaryCta = usesTailoredQuote || isQuoteOnly || tour.price <= 0 ? "Request a quote" : "Request to book";
   const bookingMessage = `Hello Coast Rider Tour, I would like to book ${tour.title}.`;
   const canonicalUrl = typeof window !== "undefined" ? window.location.href.split("?")[0] : "";
   const shareImage = typeof window !== "undefined" && !tour.image.startsWith("http")
@@ -130,7 +132,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
               <p className="mt-5 max-w-3xl whitespace-pre-line text-base leading-8 text-muted-foreground">{tour.fullDescription || tour.description}</p>
             </section>
 
-            <TourPriceCalculator slug={tour.slug} currency={tour.currency} pricing={tour.pricing} safariQuote={isSafari} />
+            <TourPriceCalculator slug={tour.slug} currency={tour.currency} pricing={tour.pricing} startingPrice={tour.price} tailoredQuote={usesTailoredQuote} safariQuote={isSafari} />
 
             {gallery.length > 1 && (
               <section>
@@ -215,7 +217,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
               </div>
               <div className="my-6 h-px bg-border" />
               <div className="rounded-xl bg-[var(--sand)]/65 p-4 text-xs leading-5 text-muted-foreground">
-                {!isQuoteOnly && tour.price > 0 ? <><strong className="block text-foreground">See your estimated total</strong><span>Select your date and number of travellers. We show the estimate before you send the request.</span></> : <><strong className="block text-foreground">Tailored pricing</strong><span>Send your date and group size for a personalised quote.</span></>}
+                {!usesTailoredQuote && !isQuoteOnly && tour.price > 0 ? <><strong className="block text-foreground">See your estimated total</strong><span>Select your date and number of travellers. We show the estimate before you send the request.</span></> : <><strong className="block text-foreground">Tailored pricing</strong><span>Send your date and group size for a personalised quote.</span></>}
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground"><span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-[var(--turquoise)]" /> No payment now</span><span className="inline-flex items-center gap-1.5"><MessageCircle className="h-4 w-4 text-[var(--turquoise)]" /> Local support</span></div>
               <a href={requestHref} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--gold)] px-5 py-3.5 font-bold text-foreground transition hover:brightness-95">{primaryCta}</a>
@@ -238,7 +240,7 @@ export default function TourShow({ tour, relatedTours }: Props) {
         <div className="mx-auto flex max-w-lg items-center gap-2.5">
           <div className="min-w-0 flex-1"><p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{tour.price > 0 ? "Starting from" : "Pricing"}</p><p className="truncate font-display text-lg font-bold text-[var(--ocean)]">{priceLabel}</p></div>
           <a href={getWhatsAppLink(bookingMessage, site)} target="_blank" rel="noopener noreferrer" aria-label="Ask about this tour on WhatsApp" className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white"><MessageCircle className="h-5 w-5" /></a>
-          <a href={requestHref} className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--gold)] px-4 text-center text-xs font-bold leading-4 text-foreground">{isSafari || isQuoteOnly || tour.price <= 0 ? "Request quote" : "Request to book"}</a>
+          <a href={requestHref} className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[var(--gold)] px-4 text-center text-xs font-bold leading-4 text-foreground">{usesTailoredQuote || isQuoteOnly || tour.price <= 0 ? "Request quote" : "Request to book"}</a>
         </div>
       </div>
       <div className="hidden lg:block"><WhatsAppFloatingButton /></div>

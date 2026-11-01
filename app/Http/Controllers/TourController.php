@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Support\TourPricing;
+use App\Models\SiteSetting;
 use App\Models\Tour;
 use App\Models\TourCategory;
-use App\Models\SiteSetting;
+use App\Support\TourPricing;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,6 +27,10 @@ class TourController extends Controller
         $settings = SiteSetting::publicValues();
         $category = $safaris ? '' : $request->string('category')->trim()->toString();
         $search = mb_substr($request->string('q')->trim()->toString(), 0, 100);
+        $searchTerms = array_slice(array_values(array_filter(
+            preg_split('/\s+/u', $search) ?: [],
+            fn (string $term): bool => $term !== '',
+        )), 0, 8);
         $type = $safaris ? 'safari' : $request->string('type')->toString();
         $type = in_array($type, ['zanzibar_tour', 'water_sport'], true) ? $type : '';
         $duration = $request->string('duration')->toString();
@@ -43,12 +47,16 @@ class TourController extends Controller
                 'category',
                 fn ($categoryQuery) => $categoryQuery->where('slug', $category),
             ))
-            ->when($search, fn ($builder) => $builder->where(function ($searchQuery) use ($search): void {
-                $searchQuery
-                    ->where('title', 'like', "%{$search}%")
-                    ->orWhere('excerpt', 'like', "%{$search}%")
-                    ->orWhere('location', 'like', "%{$search}%");
-            }))
+            ->when($searchTerms, function ($builder) use ($searchTerms): void {
+                foreach ($searchTerms as $term) {
+                    $builder->where(function ($searchQuery) use ($term): void {
+                        $searchQuery
+                            ->where('title', 'like', "%{$term}%")
+                            ->orWhere('excerpt', 'like', "%{$term}%")
+                            ->orWhere('location', 'like', "%{$term}%");
+                    });
+                }
+            })
             ->when($type && ! $safaris, fn ($builder) => $builder->where('experience_type', $type))
             ->when($duration === 'half_day', fn ($builder) => $builder->where(function ($durationQuery): void {
                 $durationQuery->where('duration', 'like', '%Half Day%')->orWhere('duration', 'like', '%Hour%');

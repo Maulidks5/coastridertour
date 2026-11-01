@@ -7,7 +7,7 @@ import {
     TestimonialSlider,
     type PublicTestimonial,
 } from "@/Components/TestimonialSlider";
-import { HomeGallery, InstagramIcon } from "@/Components/HomeGallery";
+import { HomeGallery, InstagramIcon, type InstagramPost } from "@/Components/HomeGallery";
 import { Footer } from "@/Components/Footer";
 import { WhatsAppFloatingButton } from "@/Components/WhatsAppFloatingButton";
 import { getWhatsAppLink, useSiteConfig } from "@/config/site";
@@ -24,6 +24,7 @@ import {
     ArrowRight,
     Compass,
     CheckCircle2,
+    Play,
 } from "lucide-react";
 
 const icons = {
@@ -87,8 +88,20 @@ type HomePageProps = {
     featuredHighlights: string[];
     homeItems: Record<string, HomeItem[]>;
     galleryImages: Array<{ path: string; alt: string }>;
+    instagramPosts: InstagramPost[];
     heroSlides: HeroSlideData[];
     testimonials: PublicTestimonial[];
+    featuredVideo: {
+        enabled: boolean;
+        path: string;
+        posterPath: string;
+        title: string;
+        description: string;
+        primaryLabel: string;
+        primaryUrl: string;
+        secondaryLabel: string;
+        secondaryUrl: string;
+    };
 };
 
 export default function HomePage({
@@ -98,8 +111,10 @@ export default function HomePage({
     featuredHighlights,
     homeItems,
     galleryImages,
+    instagramPosts,
     heroSlides,
     testimonials,
+    featuredVideo,
     content,
 }: HomePageProps) {
     const site = useSiteConfig();
@@ -172,6 +187,62 @@ export default function HomePage({
                         <Link href="/safaris" className="inline-flex items-center justify-center rounded-xl bg-[var(--ocean)] px-3 py-3 text-xs font-bold text-white">All safaris</Link>
                     </div>
                 </section>
+
+                {/* Featured travel film */}
+                {featuredVideo.enabled && featuredVideo.path && (
+                <section className="bg-[var(--sand)]/35 px-4 py-14 sm:px-6 md:py-20 lg:px-8">
+                    <div className="mx-auto grid max-w-7xl overflow-hidden rounded-3xl bg-[var(--ocean)] text-white shadow-[var(--shadow-soft)] lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)]">
+                        <div className="relative min-h-[18rem] overflow-hidden sm:min-h-[25rem] lg:order-2 lg:min-h-full">
+                            <video
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="metadata"
+                                poster={featuredVideo.posterPath}
+                                className="absolute inset-0 h-full w-full object-cover"
+                                aria-label="Elephants on a Tanzania safari"
+                            >
+                                <source
+                                    src={featuredVideo.path}
+                                    type={featuredVideo.path.endsWith(".mp4") ? "video/mp4" : "video/webm"}
+                                />
+                            </video>
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--ocean)]/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-[var(--ocean)]/35 lg:to-transparent" />
+                            <span className="absolute bottom-5 left-5 inline-flex items-center gap-2 rounded-full bg-black/35 px-3 py-2 text-xs font-bold backdrop-blur-sm">
+                                <Play className="h-3.5 w-3.5 fill-current" />
+                                Tanzania in motion
+                            </span>
+                        </div>
+                        <div className="flex flex-col justify-center px-6 py-10 sm:px-10 md:py-14 lg:order-1 lg:px-14">
+                            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--gold)]">
+                                Watch the journey
+                            </p>
+                            <h2 className="mt-3 max-w-lg font-display text-3xl font-bold leading-tight md:text-4xl">
+                                {featuredVideo.title}
+                            </h2>
+                            <p className="mt-4 max-w-xl text-sm leading-7 text-white/75 md:text-base">
+                                {featuredVideo.description}
+                            </p>
+                            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                                <Link
+                                    href={featuredVideo.primaryUrl}
+                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--gold)] px-6 py-3 text-sm font-bold text-foreground transition hover:brightness-95"
+                                >
+                                    {featuredVideo.primaryLabel}
+                                    <ArrowRight className="h-4 w-4" />
+                                </Link>
+                                <Link
+                                    href={featuredVideo.secondaryUrl}
+                                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-[var(--ocean)]"
+                                >
+                                    {featuredVideo.secondaryLabel}
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                )}
 
                 {/* Choose your adventure */}
                 <section className="bg-[var(--sand)]/35">
@@ -375,7 +446,7 @@ export default function HomePage({
                 </section>
 
                 {/* Travel gallery */}
-                {galleryImages.length > 0 && (
+                {(instagramPosts.length > 0 || galleryImages.length > 0) && (
                     <section id="gallery" className="scroll-mt-20 bg-[var(--sand)]/45">
                         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-20 lg:px-8">
                             <div className="mx-auto mb-9 max-w-3xl text-center">
@@ -387,7 +458,7 @@ export default function HomePage({
                                     A glimpse of island days, safari journeys and memorable experiences across Tanzania.
                                 </p>
                             </div>
-                            <HomeGallery images={galleryImages} instagramUrl={site.social.instagram} />
+                            <HomeGallery posts={instagramPosts} images={galleryImages} instagramUrl={site.social.instagram} />
                             {site.social.instagram && site.social.instagram !== "#" && (
                                 <div className="mt-9 text-center">
                                     <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[var(--ocean)] px-6 py-3 text-sm font-bold text-white transition hover:brightness-110">

@@ -62,7 +62,7 @@ const services = [
 const vehicles = [
     {
         value: "sedan",
-        title: "Sedan",
+        title: "Standard Car",
         example: "Toyota Premio or similar",
         passengers: "1–3 guests",
         luggage: "Up to 3 bags",
@@ -71,9 +71,9 @@ const vehicles = [
     },
     {
         value: "suv-minivan",
-        title: "SUV / Minivan",
-        example: "Toyota Noah, Alphard or similar",
-        passengers: "4–6 guests",
+        title: "Premium SUV / Prado",
+        example: "Toyota Land Cruiser Prado or similar",
+        passengers: "1–6 guests",
         luggage: "Up to 5 bags",
         icon: CarFront,
         image: "/images/experiences/transport-minivan.jpg",
@@ -180,6 +180,7 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
     const site = useSiteConfig();
     const [step, setStep] = useState(1);
     const [vehicleChooserOpen, setVehicleChooserOpen] = useState(false);
+    const [showAllRates, setShowAllRates] = useState(false);
     const form = useForm({
         full_name: "",
         phone: "",
@@ -535,7 +536,10 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                 </span>
                             </div>
                             <div className="mt-7 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                                {pricedRoutes.map((route) => (
+                                {(showAllRates
+                                    ? pricedRoutes
+                                    : pricedRoutes.slice(0, 6)
+                                ).map((route) => (
                                     <button
                                         type="button"
                                         key={route.id}
@@ -573,8 +577,8 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                         </p>
                                         <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pt-3">
                                             {[
-                                                ["sedan", "Sedan"],
-                                                ["suv-minivan", "SUV / Minivan"],
+                                                ["sedan", "Standard Car"],
+                                                ["suv-minivan", "Prado / Premium SUV"],
                                                 ["van", "Van"],
                                                 ["minibus", "Minibus"],
                                             ].map(([key, label]) =>
@@ -592,6 +596,22 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                     </button>
                                 ))}
                             </div>
+                            {pricedRoutes.length > 6 && (
+                                <div className="mt-7 flex justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setShowAllRates((current) => !current)
+                                        }
+                                        aria-expanded={showAllRates}
+                                        className="inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--ocean)] px-6 text-sm font-bold text-[var(--ocean)] transition hover:bg-[var(--ocean)] hover:text-white"
+                                    >
+                                        {showAllRates
+                                            ? "Show fewer routes"
+                                            : `View all ${pricedRoutes.length} routes`}
+                                    </button>
+                                </div>
+                            )}
                             <div className="mt-6 grid gap-3 text-xs text-muted-foreground sm:grid-cols-3">
                                 <p className="flex gap-2 rounded-xl bg-[var(--sand)]/60 p-4">
                                     <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--turquoise)]" />
@@ -599,11 +619,11 @@ export default function Transport({ tourDestinations, pricedRoutes }: Props) {
                                 </p>
                                 <p className="flex gap-2 rounded-xl bg-[var(--sand)]/60 p-4">
                                     <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--turquoise)]" />
-                                    Return discount is calculated automatically when available.
+                                    Return trips are calculated automatically from the selected route.
                                 </p>
                                 <p className="flex gap-2 rounded-xl bg-[var(--sand)]/60 p-4">
                                     <Info className="h-4 w-4 shrink-0 text-[var(--turquoise)]" />
-                                    Night trips and child seats may add the displayed surcharge.
+                                    Special stops and larger groups receive a clear custom quote.
                                 </p>
                             </div>
                         </div>

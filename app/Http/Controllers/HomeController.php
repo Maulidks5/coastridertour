@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HeroSlide;
+use App\Models\HomeContentItem;
+use App\Models\SiteSetting;
+use App\Models\Testimonial;
 use App\Models\Tour;
 use App\Models\TourCategory;
-use App\Models\SiteSetting;
-use App\Models\HomeContentItem;
 use App\Models\TourImage;
-use App\Models\HeroSlide;
-use App\Models\Testimonial;
+use App\Services\InstagramFeed;
 use App\Support\TourPricing;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public function __invoke(): Response
+    public function __invoke(InstagramFeed $instagramFeed): Response
     {
         $settings = SiteSetting::publicValues();
         $featuredTour = Tour::query()
@@ -95,6 +96,7 @@ class HomeController extends Controller
                 ->limit(6)
                 ->get(['path', 'alt_text'])
                 ->map(fn (TourImage $image): array => ['path' => $image->path, 'alt' => $image->alt_text ?? 'Zanzibar experience']),
+            'instagramPosts' => $instagramFeed->latest(6),
             'heroSlides' => HeroSlide::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
@@ -112,6 +114,17 @@ class HomeController extends Controller
                     'secondaryLabel' => $slide->secondary_label,
                     'secondaryUrl' => $slide->secondary_url,
                 ]),
+            'featuredVideo' => [
+                'enabled' => ($settings['homepage_video_enabled'] ?? '1') === '1',
+                'path' => $settings['homepage_video_path'] ?? '/videos/ngorongoro-elephants-hero.webm',
+                'posterPath' => $settings['homepage_video_poster_path'] ?? '/images/experiences/hero-safari.webp',
+                'title' => $settings['homepage_video_title'] ?? 'A glimpse of the wild, before you arrive',
+                'description' => $settings['homepage_video_description'] ?? 'From Zanzibar\'s coast to Tanzania\'s iconic parks, every journey is planned with local care and private comfort.',
+                'primaryLabel' => $settings['homepage_video_primary_label'] ?? 'Explore Tanzania safaris',
+                'primaryUrl' => $settings['homepage_video_primary_url'] ?? '/safaris',
+                'secondaryLabel' => $settings['homepage_video_secondary_label'] ?? 'Explore Zanzibar tours',
+                'secondaryUrl' => $settings['homepage_video_secondary_url'] ?? '/tours',
+            ],
             'content' => collect($settings)
                 ->filter(fn ($value, $key) => str_starts_with($key, 'hero_')
                     || str_starts_with($key, 'popular_')

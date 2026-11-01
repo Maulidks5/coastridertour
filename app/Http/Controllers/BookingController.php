@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookingRequest;
+use App\Mail\NewWebsiteSubmission;
 use App\Models\Booking;
 use App\Models\Tour;
-use App\Mail\NewWebsiteSubmission;
 use App\Support\SendsSubmissionEmail;
 use App\Support\TourPricing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,6 +19,7 @@ use Inertia\Response;
 class BookingController extends Controller
 {
     use SendsSubmissionEmail;
+
     public function create(Request $request, Tour $tour): Response
     {
         abort_unless($tour->is_published, 404);
@@ -40,6 +41,7 @@ class BookingController extends Controller
                 'description' => $tour->excerpt,
                 'duration' => $tour->duration,
                 'location' => $tour->location,
+                'experienceType' => $tour->experience_type,
                 'price' => (float) $tour->price,
                 'currency' => $tour->currency,
                 'pricing' => TourPricing::payload($tour),
@@ -58,7 +60,10 @@ class BookingController extends Controller
             throw ValidationException::withMessages(['booking_type' => 'This tour style is not currently available.']);
         }
 
-        $estimate = TourPricing::estimate($tour, $data['booking_type'], (int) $data['adults'], $data['children_ages'] ?? []);
+        $usesTailoredQuote = in_array($tour->experience_type, ['safari', 'kilimanjaro'], true);
+        $estimate = $usesTailoredQuote
+            ? null
+            : TourPricing::estimate($tour, $data['booking_type'], (int) $data['adults'], $data['children_ages'] ?? []);
         $booking = $tour->bookings()->create([
             ...$data,
             'estimated_price' => $estimate,
@@ -154,7 +159,6 @@ class BookingController extends Controller
             ],
         ]);
     }
-
 
     private function newReference(): string
     {

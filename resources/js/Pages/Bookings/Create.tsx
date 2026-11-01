@@ -13,6 +13,7 @@ type TourSummary = {
     description: string;
     duration: string;
     location: string;
+    experienceType: string;
     price: number;
     currency: string;
     pricing: TourPricing;
@@ -81,7 +82,8 @@ export default function BookingCreate({ tour, selection }: Props) {
         () => calculateTourTotal(tour.pricing, data.adults, childCount, infantCount, data.booking_type),
         [tour.pricing, data.adults, childCount, infantCount, data.booking_type],
     );
-    const isQuote = estimatedTotal === null;
+    const usesTailoredQuote = tour.experienceType === "safari" || tour.experienceType === "kilimanjaro";
+    const isQuote = usesTailoredQuote || estimatedTotal === null;
     const totalGuests = data.adults + childCount + infantCount;
     const bookingStyleLabel = tour.pricing.bookingStyleLabel || (data.booking_type === "shared" ? "Shared tour" : "Private arrangement");
     const now = new Date();

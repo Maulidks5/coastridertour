@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'instagram' => [
+        'access_token' => env('INSTAGRAM_ACCESS_TOKEN'),
+        'base_url' => env('INSTAGRAM_API_BASE_URL', 'https://graph.instagram.com'),
+    ],
+
 ];

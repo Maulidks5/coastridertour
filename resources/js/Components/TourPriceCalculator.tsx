@@ -3,9 +3,9 @@ import { ArrowRight, Check, Minus, Plus, ShieldCheck } from "lucide-react";
 import { calculateTourTotal, preferredBookingType } from "@/lib/tourPricing";
 import type { TourPricing } from "@/types/tour";
 
-type Props = { slug: string; currency: string; pricing: TourPricing; safariQuote?: boolean };
+type Props = { slug: string; currency: string; pricing: TourPricing; startingPrice?: number; tailoredQuote?: boolean; safariQuote?: boolean };
 
-export function TourPriceCalculator({ slug, currency, pricing, safariQuote = false }: Props) {
+export function TourPriceCalculator({ slug, currency, pricing, startingPrice = 0, tailoredQuote = false, safariQuote = false }: Props) {
     const [adults, setAdults] = useState(2);
     const [children, setChildren] = useState(0);
     const [infants, setInfants] = useState(0);
@@ -24,11 +24,13 @@ export function TourPriceCalculator({ slug, currency, pricing, safariQuote = fal
         [pricing, adults, children, infants, bookingType],
     );
     const totalGuests = adults + children + infants;
-    const needsQuote = estimatedTotal === null;
+    const needsQuote = tailoredQuote || estimatedTotal === null;
     const continueHref = safariQuote
         ? `/safaris?safari=${encodeURIComponent(slug)}&adults=${adults}&children=${children + infants}#plan-safari`
         : `/book/${slug}?type=${bookingType}&adults=${adults}&children=${children}&infants=${infants}`;
-    const pricingExplanation = isQuote
+    const pricingExplanation = tailoredQuote
+        ? "The displayed amount is a planning price. Send your date, group size and travel preferences for one complete written quote before payment."
+        : isQuote
         ? "Send your date, group size and hotel. We will reply with one complete price before payment."
         : isPerPerson
           ? "The adult rate reduces as your group grows. Add children or infants to see one estimated total."
@@ -41,13 +43,21 @@ export function TourPriceCalculator({ slug, currency, pricing, safariQuote = fal
             <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem]">
                 <div className="p-6 md:p-8">
                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--turquoise)]">Simple pricing</p>
-                    <h2 className="mt-2 font-display text-3xl font-bold">{isQuote ? "Request your price" : "Choose your group size"}</h2>
+                    <h2 className="mt-2 font-display text-3xl font-bold">{tailoredQuote || isQuote ? "Request your exact price" : "Choose your group size"}</h2>
                     {pricing.bookingStyleLabel && <p className="mt-3 inline-flex rounded-full bg-[var(--sand)] px-3 py-1.5 text-xs font-bold text-[var(--ocean)]">{pricing.bookingStyleLabel}</p>}
                     <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                         {pricingExplanation}
                     </p>
 
-                    {isPerPerson && perPersonRates.length > 0 && (
+                    {tailoredQuote && startingPrice > 0 && (
+                        <div className="mt-6 rounded-2xl border border-[var(--turquoise)]/25 bg-[var(--turquoise)]/5 p-5">
+                            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Planning price per person</p>
+                            <p className="mt-1 font-display text-3xl font-bold text-[var(--ocean)]">From {money(startingPrice)}</p>
+                            <p className="mt-1 text-sm text-muted-foreground">Final price depends on dates, group size, route and selected accommodation or services.</p>
+                        </div>
+                    )}
+
+                    {isPerPerson && !tailoredQuote && perPersonRates.length > 0 && (
                         <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                             <div className="grid grid-cols-[1fr_auto] bg-[var(--sand)]/70 px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground"><span>Number of adults</span><span>Price per adult</span></div>
                             {perPersonRates.map((tier) => (
@@ -61,7 +71,7 @@ export function TourPriceCalculator({ slug, currency, pricing, safariQuote = fal
                         </div>
                     )}
 
-                    {!isQuote && !isPerPerson && groupRate?.price !== null && groupRate && groupRatesMatch && (
+                    {!tailoredQuote && !isQuote && !isPerPerson && groupRate?.price !== null && groupRate && groupRatesMatch && (
                         <div className="mt-6 rounded-2xl border border-[var(--turquoise)]/25 bg-[var(--turquoise)]/5 p-5">
                             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Private group price</p>
                             <p className="mt-1 font-display text-3xl font-bold text-[var(--ocean)]">{money(groupRate.price!)}</p>
@@ -69,13 +79,13 @@ export function TourPriceCalculator({ slug, currency, pricing, safariQuote = fal
                         </div>
                     )}
 
-                    {!isQuote && !isPerPerson && groupRates.length > 0 && !groupRatesMatch && (
+                    {!tailoredQuote && !isQuote && !isPerPerson && groupRates.length > 0 && !groupRatesMatch && (
                         <div className="mt-6 overflow-hidden rounded-2xl border border-border">
                             {groupRates.map((tier) => <div key={tier.min} className="grid grid-cols-[1fr_auto] items-center border-t border-border px-4 py-3 text-sm first:border-t-0"><span className="font-semibold">{tier.min === tier.max ? `${tier.min} ${tier.min === 1 ? "guest" : "guests"}` : `${tier.min}–${tier.max} guests`}</span><strong className="text-[var(--ocean)]">{money(tier.price!)}</strong></div>)}
                         </div>
                     )}
 
-                    {!isQuote && !pricing.privateAvailable && sharedRate !== null && (
+                    {!tailoredQuote && !isQuote && !pricing.privateAvailable && sharedRate !== null && (
                         <div className="mt-6 rounded-2xl border border-[var(--turquoise)]/25 bg-[var(--turquoise)]/5 p-5">
                             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Price per adult</p>
                             <p className="mt-1 font-display text-3xl font-bold text-[var(--ocean)]">{money(sharedRate)}</p>
