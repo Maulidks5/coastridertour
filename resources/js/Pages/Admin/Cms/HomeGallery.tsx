@@ -20,7 +20,7 @@ export default function HomeGallery({ images }: Props) {
       <AdminPageHeader eyebrow="Homepage visual" title="Travel gallery" description="Upload real Coast Rider moments for the homepage. Use 6–8 strong landscape or portrait images; the first six appear first." />
       <form onSubmit={submit} className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div><p className="font-display text-xl font-bold">Add gallery images</p><p className="mt-1 text-sm leading-6 text-slate-500">Upload up to 12 images at once. Images are resized and converted to WebP automatically.</p></div>
+          <div><p className="font-display text-xl font-bold">Add gallery images</p><p className="mt-1 text-sm leading-6 text-slate-500">Upload up to 12 JPEG, PNG or WebP images at once (15 MB each). Images are resized and converted to WebP automatically.</p></div>
           <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-[var(--ocean)]"><ImagePlus className="h-4 w-4" />{upload.data.images.length ? `${upload.data.images.length} selected` : "Choose images"}<input type="file" multiple accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => upload.setData("images", Array.from(event.target.files ?? []))} /></label>
         </div>
         {upload.errors.images && <p className="px-5 pb-4 text-sm text-rose-600 sm:px-7">{upload.errors.images}</p>}

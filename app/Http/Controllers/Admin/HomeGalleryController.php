@@ -27,7 +27,7 @@ class HomeGalleryController extends Controller
     {
         $validated = $request->validate([
             'images' => ['required', 'array', 'min:1', 'max:12'],
-            'images.*' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            'images.*' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:15360'],
         ]);
 
         $nextOrder = ((int) HomeGalleryImage::query()->max('sort_order')) + 1;
