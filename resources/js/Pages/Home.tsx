@@ -87,7 +87,7 @@ type HomePageProps = {
     content: Record<string, string>;
     featuredHighlights: string[];
     homeItems: Record<string, HomeItem[]>;
-    galleryImages: Array<{ path: string; alt: string }>;
+    galleryImages: Array<{ path: string; alt: string; tour: { title: string; href: string } | null }>;
     heroSlides: HeroSlideData[];
     testimonials: PublicTestimonial[];
     featuredVideo: {

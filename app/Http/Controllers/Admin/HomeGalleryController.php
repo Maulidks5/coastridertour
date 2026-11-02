@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HomeGalleryImage;
+use App\Models\Tour;
 use App\Support\WebImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,8 +19,14 @@ class HomeGalleryController extends Controller
     {
         return Inertia::render('Admin/Cms/HomeGallery', [
             'images' => HomeGalleryImage::query()
+                ->with('tour:id,title,slug')
                 ->orderByDesc('id')
-                ->get(['id', 'path', 'alt_text', 'sort_order', 'is_active']),
+                ->get(['id', 'path', 'alt_text', 'tour_id', 'sort_order', 'is_active']),
+            'tours' => Tour::query()
+                ->published()
+                ->orderBy('experience_type')
+                ->orderBy('title')
+                ->get(['id', 'title', 'slug']),
         ]);
     }
 
@@ -49,6 +56,7 @@ class HomeGalleryController extends Controller
     {
         $validated = $request->validate([
             'alt_text' => ['nullable', 'string', 'max:190'],
+            'tour_id' => ['nullable', 'integer', 'exists:tours,id'],
             'is_active' => ['required', 'boolean'],
         ]);
 

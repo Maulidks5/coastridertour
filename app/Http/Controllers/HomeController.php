@@ -92,10 +92,18 @@ class HomeController extends Controller
                 ]),
             'galleryImages' => HomeGalleryImage::query()
                 ->where('is_active', true)
-                ->orderBy('sort_order')
+                ->with('tour:id,title,slug')
+                ->orderByDesc('id')
                 ->limit(8)
-                ->get(['path', 'alt_text'])
-                ->map(fn (HomeGalleryImage $image): array => ['path' => $image->path, 'alt' => $image->alt_text ?? 'Coast Rider travel experience']),
+                ->get(['path', 'alt_text', 'tour_id'])
+                ->map(fn (HomeGalleryImage $image): array => [
+                    'path' => $image->path,
+                    'alt' => $image->alt_text ?? 'Coast Rider travel experience',
+                    'tour' => $image->tour ? [
+                        'title' => $image->tour->title,
+                        'href' => "/tours/{$image->tour->slug}",
+                    ] : null,
+                ]),
             'heroSlides' => HeroSlide::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
