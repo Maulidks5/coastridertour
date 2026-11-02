@@ -4,7 +4,7 @@ import { Eye, EyeOff, ImagePlus, Save, Trash2, UploadCloud } from "lucide-react"
 import { AdminLayout } from "@/Components/AdminLayout";
 import { AdminPageHeader } from "@/Components/AdminUi";
 
-type GalleryImage = { id: number; path: string; alt_text: string | null; sort_order: number; is_active: boolean };
+type GalleryImage = { id: number; path: string; alt_text: string | null; is_active: boolean };
 type Props = { images: GalleryImage[] };
 
 export default function HomeGallery({ images }: Props) {
@@ -17,7 +17,7 @@ export default function HomeGallery({ images }: Props) {
 
   return (
     <AdminLayout title="Homepage gallery">
-      <AdminPageHeader eyebrow="Homepage visual" title="Travel gallery" description="Upload real Coast Rider moments for the homepage. Use 6–8 strong landscape or portrait images; the first six appear first." />
+      <AdminPageHeader eyebrow="Homepage visual" title="Travel gallery" description="Upload real Coast Rider moments for the homepage. New uploads always display first; use 6–8 strong landscape or portrait images." />
       <form onSubmit={submit} className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-[1fr_auto] lg:items-center">
           <div><p className="font-display text-xl font-bold">Add gallery images</p><p className="mt-1 text-sm leading-6 text-slate-500">Upload up to 12 JPEG, PNG or WebP images at once (15 MB each). Images are resized and converted to WebP automatically.</p></div>
@@ -36,12 +36,12 @@ export default function HomeGallery({ images }: Props) {
 }
 
 function GalleryCard({ image }: { image: GalleryImage }) {
-  const form = useForm({ alt_text: image.alt_text ?? "", sort_order: image.sort_order, is_active: image.is_active });
+  const form = useForm({ alt_text: image.alt_text ?? "", is_active: image.is_active });
   const [editing, setEditing] = useState(false);
   function save() { form.patch(`/admin/cms/home-gallery/${image.id}`, { preserveScroll: true, onSuccess: () => setEditing(false) }); }
   return <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><img src={image.path} alt={image.alt_text ?? ""} className="aspect-[4/3] w-full object-cover" />
     <div className="p-4"><div className="flex items-center justify-between gap-3"><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${form.data.is_active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{form.data.is_active ? "Visible" : "Hidden"}</span><div className="flex gap-1"><button type="button" onClick={() => { form.setData("is_active", !form.data.is_active); form.patch(`/admin/cms/home-gallery/${image.id}`, { preserveScroll: true }); }} title="Toggle visibility" className="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100">{form.data.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}</button><button type="button" onClick={() => { if (confirm("Remove this image from the homepage gallery?")) router.delete(`/admin/cms/home-gallery/${image.id}`, { preserveScroll: true }); }} title="Remove image" className="grid h-9 w-9 place-items-center rounded-lg text-rose-500 hover:bg-rose-50"><Trash2 className="h-4 w-4" /></button></div></div>
-      <button type="button" onClick={() => setEditing(!editing)} className="mt-3 text-xs font-bold text-[var(--ocean)]">{editing ? "Close editor" : "Edit caption & order"}</button>
-      {editing && <div className="mt-3 grid gap-3 border-t border-slate-100 pt-3"><label className="grid gap-1 text-xs font-bold text-slate-600">Image description<input value={form.data.alt_text} onChange={(event) => form.setData("alt_text", event.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal outline-none focus:border-[var(--turquoise)]" /></label><label className="grid gap-1 text-xs font-bold text-slate-600">Display order<input type="number" min="1" value={form.data.sort_order} onChange={(event) => form.setData("sort_order", Number(event.target.value))} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal outline-none focus:border-[var(--turquoise)]" /></label><button type="button" disabled={form.processing} onClick={save} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--ocean)] px-3 py-2.5 text-sm font-bold text-white"><Save className="h-4 w-4" /> Save</button></div>}
+      <button type="button" onClick={() => setEditing(!editing)} className="mt-3 text-xs font-bold text-[var(--ocean)]">{editing ? "Close editor" : "Edit caption"}</button>
+      {editing && <div className="mt-3 grid gap-3 border-t border-slate-100 pt-3"><label className="grid gap-1 text-xs font-bold text-slate-600">Image description<input value={form.data.alt_text} onChange={(event) => form.setData("alt_text", event.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-normal outline-none focus:border-[var(--turquoise)]" /></label><button type="button" disabled={form.processing} onClick={save} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--ocean)] px-3 py-2.5 text-sm font-bold text-white"><Save className="h-4 w-4" /> Save</button></div>}
     </div></article>;
 }

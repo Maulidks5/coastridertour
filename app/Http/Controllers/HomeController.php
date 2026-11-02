@@ -73,7 +73,7 @@ class HomeController extends Controller
             ) ?? [],
             'homeItems' => HomeContentItem::query()
                 ->where('is_active', true)
-                ->orderBy('sort_order')
+                ->orderByDesc('id')
                 ->get(['section', 'title', 'description', 'meta', 'icon'])
                 ->groupBy('section')
                 ->map(fn ($items) => $items->values()),

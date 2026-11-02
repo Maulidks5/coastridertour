@@ -18,7 +18,7 @@ class HomeGalleryController extends Controller
     {
         return Inertia::render('Admin/Cms/HomeGallery', [
             'images' => HomeGalleryImage::query()
-                ->orderBy('sort_order')
+                ->orderByDesc('id')
                 ->get(['id', 'path', 'alt_text', 'sort_order', 'is_active']),
         ]);
     }
@@ -49,7 +49,6 @@ class HomeGalleryController extends Controller
     {
         $validated = $request->validate([
             'alt_text' => ['nullable', 'string', 'max:190'],
-            'sort_order' => ['required', 'integer', 'min:1', 'max:999'],
             'is_active' => ['required', 'boolean'],
         ]);
 
