@@ -7,7 +7,7 @@ import {
     TestimonialSlider,
     type PublicTestimonial,
 } from "@/Components/TestimonialSlider";
-import { HomeGallery, InstagramIcon, type InstagramPost } from "@/Components/HomeGallery";
+import { HomeGallery } from "@/Components/HomeGallery";
 import { Footer } from "@/Components/Footer";
 import { WhatsAppFloatingButton } from "@/Components/WhatsAppFloatingButton";
 import { getWhatsAppLink, useSiteConfig } from "@/config/site";
@@ -88,7 +88,6 @@ type HomePageProps = {
     featuredHighlights: string[];
     homeItems: Record<string, HomeItem[]>;
     galleryImages: Array<{ path: string; alt: string }>;
-    instagramPosts: InstagramPost[];
     heroSlides: HeroSlideData[];
     testimonials: PublicTestimonial[];
     featuredVideo: {
@@ -111,7 +110,6 @@ export default function HomePage({
     featuredHighlights,
     homeItems,
     galleryImages,
-    instagramPosts,
     heroSlides,
     testimonials,
     featuredVideo,
@@ -187,6 +185,29 @@ export default function HomePage({
                         <Link href="/safaris" className="inline-flex items-center justify-center rounded-xl bg-[var(--ocean)] px-3 py-3 text-xs font-bold text-white">All safaris</Link>
                     </div>
                 </section>
+
+                {/* Travel gallery */}
+                {galleryImages.length > 0 && (
+                    <section id="gallery" className="scroll-mt-20 bg-[var(--sand)]/45">
+                        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-20 lg:px-8">
+                            <div className="mx-auto mb-9 max-w-3xl text-center">
+                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--turquoise)]">Coast Rider gallery</p>
+                                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground md:text-5xl">
+                                    Moments made to remember
+                                </h2>
+                                <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+                                    Real moments from our Zanzibar tours, private transfers and Tanzania safari journeys.
+                                </p>
+                            </div>
+                            <HomeGallery images={galleryImages} />
+                            <div className="mt-9 text-center">
+                                <Link href="/tours" className="inline-flex items-center gap-2 rounded-full bg-[var(--ocean)] px-6 py-3 text-sm font-bold text-white transition hover:brightness-110">
+                                    Explore our experiences <ArrowRight className="h-4 w-4" />
+                                </Link>
+                            </div>
+                        </div>
+                    </section>
+                )}
 
                 {/* Featured travel film */}
                 {featuredVideo.enabled && featuredVideo.path && (
@@ -444,31 +465,6 @@ export default function HomePage({
                         </Link>
                     </div>
                 </section>
-
-                {/* Travel gallery */}
-                {(instagramPosts.length > 0 || galleryImages.length > 0) && (
-                    <section id="gallery" className="scroll-mt-20 bg-[var(--sand)]/45">
-                        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 md:py-20 lg:px-8">
-                            <div className="mx-auto mb-9 max-w-3xl text-center">
-                                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--turquoise)]">Travel moments</p>
-                                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground md:text-5xl">
-                                    From Zanzibar & Tanzania
-                                </h2>
-                                <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
-                                    A glimpse of island days, safari journeys and memorable experiences across Tanzania.
-                                </p>
-                            </div>
-                            <HomeGallery posts={instagramPosts} images={galleryImages} instagramUrl={site.social.instagram} />
-                            {site.social.instagram && site.social.instagram !== "#" && (
-                                <div className="mt-9 text-center">
-                                    <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[var(--ocean)] px-6 py-3 text-sm font-bold text-white transition hover:brightness-110">
-                                        <InstagramIcon className="h-4 w-4" /> Follow @coastridertour
-                                    </a>
-                                </div>
-                            )}
-                        </div>
-                    </section>
-                )}
 
                 {/* Final CTA */}
                 <section className="bg-white px-4 py-14 sm:px-6 md:py-16 lg:px-8">

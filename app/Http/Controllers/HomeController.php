@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\HeroSlide;
 use App\Models\HomeContentItem;
+use App\Models\HomeGalleryImage;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
 use App\Models\Tour;
 use App\Models\TourCategory;
-use App\Models\TourImage;
-use App\Services\InstagramFeed;
 use App\Support\TourPricing;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public function __invoke(InstagramFeed $instagramFeed): Response
+    public function __invoke(): Response
     {
         $settings = SiteSetting::publicValues();
         $featuredTour = Tour::query()
@@ -91,12 +90,12 @@ class HomeController extends Controller
                     'rating' => $item->rating,
                     'content' => $item->content,
                 ]),
-            'galleryImages' => TourImage::query()
-                ->orderByDesc('id')
-                ->limit(6)
+            'galleryImages' => HomeGalleryImage::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->limit(8)
                 ->get(['path', 'alt_text'])
-                ->map(fn (TourImage $image): array => ['path' => $image->path, 'alt' => $image->alt_text ?? 'Zanzibar experience']),
-            'instagramPosts' => $instagramFeed->latest(6),
+                ->map(fn (HomeGalleryImage $image): array => ['path' => $image->path, 'alt' => $image->alt_text ?? 'Coast Rider travel experience']),
             'heroSlides' => HeroSlide::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')

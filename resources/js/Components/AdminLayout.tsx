@@ -34,6 +34,7 @@ export function AdminLayout({ title, children }: { title: string; children: Reac
         { label: "Homepage text", href: "/admin/cms/settings?section=homepage", icon: Home },
         { label: "Homepage hero", href: "/admin/cms/hero-slides", icon: GalleryHorizontalEnd },
         { label: "Homepage sections", href: "/admin/cms/home", icon: FileText },
+        { label: "Homepage gallery", href: "/admin/cms/home-gallery", icon: Images },
         { label: "Page content", href: "/admin/cms/settings?section=pages", icon: FileText },
         { label: "FAQs", href: "/admin/faqs", icon: HelpCircle },
         { label: "Website media", href: "/admin/cms/media", icon: Images },
